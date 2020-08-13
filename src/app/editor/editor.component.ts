@@ -8,7 +8,11 @@ import { Component, Input } from '@angular/core';
 export class EditorComponent {
   @Input() code: string;
 
-  editorOptions = { theme: 'vs-dark', language: 'yaml' };
+  editorOptions = {
+    theme: 'vs-dark',
+    language: 'yaml',
+    scrollBeyondLastLine: false,
+  };
 
   constructor() {}
 }
