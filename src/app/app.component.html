@@ -7,12 +7,14 @@
       </a>
     </div>
   </header>
-  <nav class="subnav">
-    ...
-  </nav>
   <div class="content-container">
     <div class="content-area">
       <app-editor [code]="code"></app-editor>
     </div>
   </div>
 </div>
+
+<app-upload-modal
+  [isOpen]="modalOpen()"
+  (url)="updateCode($event)"
+></app-upload-modal>

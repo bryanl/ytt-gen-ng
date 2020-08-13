@@ -1,0 +1,31 @@
+<form clrForm [formGroup]="form">
+  <clr-modal [(clrModalOpen)]="isOpen">
+    <h3 class="modal-title">Upload YAML</h3>
+    <div class="modal-body">
+      <clr-input-container>
+        <label for="url">URL:</label>
+        <input
+          id="url"
+          clrInput
+          type="text"
+          placeholder="Source URL"
+          formControlName="url"
+        />
+        <clr-control-error>URL is invalid</clr-control-error>
+      </clr-input-container>
+    </div>
+    <div class="modal-footer">
+      <button
+        class="btn btn-primary"
+        type="submit"
+        (click)="submit()"
+        [disabled]="form.invalid"
+      >
+        Submit
+      </button>
+      <button class="btn" type="button" (click)="resetForm()">
+        Reset
+      </button>
+    </div>
+  </clr-modal>
+</form>
