@@ -23,8 +23,13 @@ const onMonacoLoad = () => {
         return {
           range: got.range,
           contents: [
-            { value: '**SOURCE**' },
-            { value: '```html\n' + `${got.name} (${pos})` + '\n```' },
+            { value: `**${got.name}**` },
+            {
+              value:
+                '```html\n' +
+                'This is a placeholder for something more interesting' +
+                '\n```',
+            },
           ],
         };
       }
