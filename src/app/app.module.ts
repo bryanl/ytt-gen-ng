@@ -10,6 +10,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { EditorComponent } from './editor/editor.component';
 import { UploadModalComponent } from './upload-modal/upload-modal.component';
 import { HttpClientModule } from '@angular/common/http';
+import { monacoConfig } from './monaco';
 
 @NgModule({
   declarations: [AppComponent, EditorComponent, UploadModalComponent],
@@ -21,7 +22,7 @@ import { HttpClientModule } from '@angular/common/http';
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    MonacoEditorModule.forRoot(),
+    MonacoEditorModule.forRoot(monacoConfig),
   ],
   providers: [],
   bootstrap: [AppComponent],

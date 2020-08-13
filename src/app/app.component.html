@@ -9,7 +9,7 @@
   </header>
   <div class="content-container">
     <div class="content-area">
-      <app-editor [code]="code"></app-editor>
+      <app-editor *ngIf="code.length > 0" [code]="code"></app-editor>
     </div>
   </div>
 </div>
