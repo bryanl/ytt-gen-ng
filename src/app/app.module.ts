@@ -7,13 +7,13 @@ import { ClarityModule } from '@clr/angular';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MonacoEditorModule } from 'ngx-monaco-editor';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { EditorComponent } from './editor/editor.component';
+import { YttEditorComponent } from './ytt-editor/ytt-editor.component';
 import { UploadModalComponent } from './upload-modal/upload-modal.component';
 import { HttpClientModule } from '@angular/common/http';
 import { monacoConfig } from './monaco';
 
 @NgModule({
-  declarations: [AppComponent, EditorComponent, UploadModalComponent],
+  declarations: [AppComponent, YttEditorComponent, UploadModalComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,

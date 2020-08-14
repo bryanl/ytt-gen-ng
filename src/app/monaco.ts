@@ -2,7 +2,10 @@ import { NgxMonacoEditorConfig } from 'ngx-monaco-editor';
 import * as YAMLParser from 'yaml-ast-parser';
 import IStandaloneEditorConstructionOptions = monaco.editor.IStandaloneEditorConstructionOptions;
 import IRange = monaco.IRange;
+import ITextModel = monaco.editor.ITextModel;
+import CodeLensList = monaco.languages.CodeLensList;
 
+// TODO: move this to the component with notes from: https://github.com/atularen/ngx-monaco-editor/issues/42
 const onMonacoLoad = () => {
   console.log((window as any).monaco);
 
@@ -35,6 +38,44 @@ const onMonacoLoad = () => {
       }
 
       return undefined;
+    },
+  });
+
+  // const commandId = editor.addCommand(
+  //   0,
+  //   () => {
+  //     // services available in `ctx`
+  //     alert('my command is executing!');
+  //   },
+  //   ''
+  // );
+
+  monaco.languages.registerCodeLensProvider('yaml', {
+    provideCodeLenses(
+      model: ITextModel,
+      token: monaco.CancellationToken
+    ): monaco.languages.ProviderResult<CodeLensList> {
+      return {
+        lenses: [
+          {
+            range: {
+              startLineNumber: 1,
+              startColumn: 1,
+              endLineNumber: 2,
+              endColumn: 1,
+            },
+            id: 'First Line',
+            command: {
+              id: '12345', // TODO: get the appropriate command from above,
+              title: 'First Line',
+            },
+          },
+        ],
+        dispose() {},
+      };
+    },
+    resolveCodeLens(model, codeLens, token) {
+      return codeLens;
     },
   });
 };
