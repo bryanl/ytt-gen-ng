@@ -5,27 +5,39 @@ import {
   SimpleChanges,
   ViewChild,
 } from '@angular/core';
-import IStandaloneEditorConstructionOptions = monaco.editor.IStandaloneEditorConstructionOptions;
-import { EditorComponent, NgxEditorModel } from 'ngx-monaco-editor';
+import {
+  EditorComponent,
+  NGX_MONACO_EDITOR_CONFIG,
+  NgxEditorModel,
+} from 'ngx-monaco-editor';
+import { MonacoService } from '../core/services/monaco/monaco.service';
+import IStandaloneCodeEditor = monaco.editor.IStandaloneCodeEditor;
 
 @Component({
   selector: 'app-editor',
   templateUrl: './ytt-editor.component.html',
   styleUrls: ['./ytt-editor.component.scss'],
+  providers: [
+    {
+      provide: NGX_MONACO_EDITOR_CONFIG,
+      useFactory: (monacoService: MonacoService) => {
+        return monacoService.config();
+      },
+      deps: [MonacoService],
+    },
+  ],
 })
 export class YttEditorComponent implements OnChanges {
   @ViewChild('editor') editor: EditorComponent;
 
   @Input() code: string;
 
-  editorOptions: IStandaloneEditorConstructionOptions = {};
-
   model: NgxEditorModel = {
     value: 'foo: bar',
     language: 'yaml',
   };
 
-  constructor() {}
+  constructor(private monacoService: MonacoService) {}
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.code.currentValue) {
@@ -33,10 +45,8 @@ export class YttEditorComponent implements OnChanges {
     }
   }
 
-  onInit($event: any) {
-    console.log('on init', (window as any).monaco);
-
-    console.log('editor onInit', $event);
-    console.log(this.editor);
+  onInit(editor: IStandaloneCodeEditor) {
+    this.monacoService.registerYamlHoverProvider();
+    this.monacoService.createTestProvider(editor);
   }
 }
