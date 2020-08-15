@@ -10,6 +10,7 @@ interface Positionable {
 export interface Value {
   range: IRange;
   name: string;
+  path: string[];
 }
 
 export interface DocumentPosition {
@@ -108,10 +109,14 @@ export class YamlDocument {
   }
 
   valueAt(absPos: number): Value {
-    return this.valueVisitor(this.yamlNode, absPos);
+    return this.valueVisitor(this.yamlNode, absPos, []);
   }
 
-  valueVisitor(doc: YAMLParser.YAMLNode, absPos: number): Value {
+  valueVisitor(
+    doc: YAMLParser.YAMLNode,
+    absPos: number,
+    path: string[]
+  ): Value {
     switch (doc.kind) {
       case YAMLParser.Kind.MAP:
         const ym = doc as YAMLParser.YamlMap;
@@ -126,6 +131,7 @@ export class YamlDocument {
           const end = this.position(cur.key.endPosition);
 
           return {
+            path: [...path, cur.key.value],
             name: cur.key.value,
             range: {
               endColumn: end.position.column,
@@ -135,13 +141,13 @@ export class YamlDocument {
             },
           };
         }
-        return this.valueVisitor(cur.value, absPos);
+        return this.valueVisitor(cur.value, absPos, [...path, cur.key.value]);
 
       case YAMLParser.Kind.SEQ:
         const seq = doc as YAMLParser.YAMLSequence;
         const seqCur = seq.items.find((s) => inRange(s, absPos));
         if (seqCur) {
-          return this.valueVisitor(seqCur, absPos);
+          return this.valueVisitor(seqCur, absPos, [...path]);
         }
         return undefined;
     }

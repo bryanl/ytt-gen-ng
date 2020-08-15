@@ -1,42 +1,88 @@
 export interface SchemaDefinition {
-  description: string;
+  description?: string;
   properties?: { [key: string]: SchemaDefinition };
   $ref?: string;
-  type?: string[];
+  type?: string[] | string;
+  items?: SchemaDefinition;
 }
 
 export interface SchemaDoc {
   definitions: { [key: string]: SchemaDefinition };
 }
 
-export class Schema {
-  doc: SchemaDoc;
+export interface ISchema {
+  get(id: string): SchemaDefinition;
+  description(id: string, path: string[]): string;
+}
 
-  constructor(private source: string) {
-    this.doc = JSON.parse(source);
-  }
+export class Schema implements ISchema {
+  constructor(private doc: SchemaDoc) {}
 
   get(id: string): SchemaDefinition {
     let def = { ...this.doc.definitions[id] };
     if (def.$ref) {
-      const child = this.get(this.resolveRef(def.$ref));
+      const child = this.get(resolveRef(def.$ref));
       def.$ref = undefined;
       def = { ...child, ...def };
     }
 
-    Object.entries(def.properties).forEach(([name, value]) => {
-      if (value.$ref) {
-        const child = this.get(this.resolveRef(value.$ref));
-        delete def.properties[name].$ref;
-        def.properties[name] = { ...child, ...def.properties[name] };
-      }
-    });
+    if (def.properties) {
+      Object.entries(def.properties).forEach(([name, property]) => {
+        if (property.$ref) {
+          const child = this.get(resolveRef(property.$ref));
+          delete def.properties[name].$ref;
+          def.properties[name] = { ...child, ...def.properties[name] };
+        }
+
+        if (
+          property.type === 'array' &&
+          property.items &&
+          property.items.$ref
+        ) {
+          const item = this.get(resolveRef(property.items.$ref));
+          delete def.properties[name].items.$ref;
+          def.properties[name].items = {
+            ...item,
+            ...def.properties[name].items,
+          };
+        }
+      });
+    }
 
     return def;
   }
 
-  resolveRef(ref: string): string {
-    console.log('resolving ref', ref);
-    return ref.replace(/^#\/definitions\//, '');
+  description(id: string, path: string[]): string {
+    const visit = (def: SchemaDefinition, p: string[]): string => {
+      if (p.length === 0) {
+        return def.description;
+      }
+
+      if (def && hasType(def, 'array')) {
+        return visit(def.items, p);
+      }
+
+      if (!def.properties) {
+        return '';
+      }
+
+      const name = p.shift();
+      const prop = def.properties[name];
+      return visit(prop, p);
+    };
+
+    return visit(this.get(id), path);
   }
 }
+
+const resolveRef = (ref: string): string => {
+  return ref.replace(/^#\/definitions\//, '');
+};
+
+const hasType = (def: SchemaDefinition, name: string): boolean => {
+  if (Array.isArray(def.type)) {
+    return (def.type as string[]).includes(name);
+  }
+
+  return def.type === name;
+};

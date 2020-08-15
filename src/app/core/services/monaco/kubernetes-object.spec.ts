@@ -1,17 +1,22 @@
 import { KubernetesObject } from './kubernetes-object';
+import { Schema } from '../schema/schema';
 
 describe('KubernetesObject', () => {
+  let schema: Schema;
+
+  beforeAll(() => {});
+
   describe('non-core', () => {
-    let schema: KubernetesObject;
+    let ko: KubernetesObject;
 
     beforeEach(() => {
-      schema = new KubernetesObject(deployment);
+      ko = new KubernetesObject(deployment, schema);
     });
     it('returns the definition id', () => {
-      expect(schema.definitionId()).toEqual('io.k8s.api.apps.v1.Deployment');
+      expect(ko.definitionId()).toEqual('io.k8s.api.apps.v1.Deployment');
     });
     it('returns the gvk', () => {
-      expect(schema.groupVersionKind()).toEqual({
+      expect(ko.groupVersionKind()).toEqual({
         group: 'apps',
         version: 'v1',
         kind: 'Deployment',
@@ -20,18 +25,18 @@ describe('KubernetesObject', () => {
   });
 
   describe('core', () => {
-    let schema: KubernetesObject;
+    let ko: KubernetesObject;
 
     beforeEach(() => {
-      schema = new KubernetesObject(service);
+      ko = new KubernetesObject(service, schema);
     });
 
     it('returns the definition id', () => {
-      expect(schema.definitionId()).toEqual('io.k8s.api.core.v1.Service');
+      expect(ko.definitionId()).toEqual('io.k8s.api.core.v1.Service');
     });
 
     it('returns the gvk', () => {
-      expect(schema.groupVersionKind()).toEqual({
+      expect(ko.groupVersionKind()).toEqual({
         group: '',
         version: 'v1',
         kind: 'Service',

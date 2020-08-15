@@ -1,4 +1,5 @@
 import * as YAML from 'yaml';
+import { ISchema } from '../schema/schema';
 
 export interface GroupVersionKind {
   group: string;
@@ -14,7 +15,7 @@ interface GroupVersion {
 export class KubernetesObject {
   private parsed: any;
 
-  constructor(private source: string) {
+  constructor(private source: string, private schema: ISchema) {
     this.parsed = YAML.parse(source);
   }
 
@@ -32,6 +33,10 @@ export class KubernetesObject {
     const group = gvk.group.length === 0 ? 'core' : gvk.group;
 
     return `io.k8s.api.${group}.${gvk.version}.${gvk.kind}`;
+  }
+
+  description(...path: string[]): string {
+    return this.schema.description(this.definitionId(), path);
   }
 
   private groupVersion(): GroupVersion {

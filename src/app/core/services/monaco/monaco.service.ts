@@ -6,15 +6,24 @@ import IStandaloneEditorConstructionOptions = monaco.editor.IStandaloneEditorCon
 import IStandaloneCodeEditor = monaco.editor.IStandaloneCodeEditor;
 import ITextModel = monaco.editor.ITextModel;
 import CodeLensList = monaco.languages.CodeLensList;
+import { filter, take } from 'rxjs/operators';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { Schema } from '../schema/schema';
+import { KubernetesObject } from './kubernetes-object';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MonacoService {
+  private schema$: Subject<Schema> = new BehaviorSubject<Schema>(undefined);
+
   constructor(private schemaService: SchemaService) {
-    schemaService.getSchema().subscribe((data) => {
-      console.log('got schema', data);
-    });
+    schemaService
+      .getSchema()
+      .pipe(take(1))
+      .subscribe((data) => {
+        this.schema$.next(data);
+      });
   }
 
   config(): NgxMonacoEditorConfig {
@@ -25,44 +34,49 @@ export class MonacoService {
         scrollBeyondLastLine: false,
         readOnly: true,
       } as IStandaloneEditorConstructionOptions,
-      onMonacoLoad: () => {
-        console.log('new onMonacoLoad');
-      },
     };
   }
 
   registerYamlHoverProvider() {
-    monaco.languages.registerHoverProvider('yaml', {
-      provideHover(
-        model: monaco.editor.ITextModel,
-        position: monaco.Position
-      ): monaco.languages.ProviderResult<monaco.languages.Hover> {
-        const doc = new YamlDocument(model.getValue());
-        const pos = doc.absPosition(position);
+    this.schema$
+      .pipe(
+        filter((x) => x !== undefined),
+        take(1)
+      )
+      .subscribe((schema) => {
+        monaco.languages.registerHoverProvider('yaml', {
+          provideHover(
+            model: monaco.editor.ITextModel,
+            position: monaco.Position
+          ): monaco.languages.ProviderResult<monaco.languages.Hover> {
+            const doc = new YamlDocument(model.getValue());
+            const pos = doc.absPosition(position);
 
-        const got = doc.valueAt(pos);
+            const ko = new KubernetesObject(model.getValue(), schema);
 
-        if (got) {
-          return {
-            range: got.range,
-            contents: [
-              { value: `**${got.name}**` },
-              {
-                isTrusted: true,
-                value:
-                  'This is a placeholder for something more interesting [(click me)](http://google.com)',
-              },
-              {
-                isTrusted: true,
-                value: '[Link 1](http://google.com)',
-              },
-            ],
-          };
-        }
+            const value = doc.valueAt(pos);
 
-        return undefined;
-      },
-    });
+            if (value) {
+              return {
+                range: value.range,
+                contents: [
+                  { value: `**${value.name}**` },
+                  {
+                    isTrusted: true,
+                    value: ko.description(...value.path),
+                  },
+                  {
+                    isTrusted: true,
+                    value: '[Link 1](http://google.com)',
+                  },
+                ],
+              };
+            }
+
+            return undefined;
+          },
+        });
+      });
   }
 
   createTestProvider(editor: IStandaloneCodeEditor) {
@@ -80,8 +94,6 @@ export class MonacoService {
         model: ITextModel,
         token: monaco.CancellationToken
       ): monaco.languages.ProviderResult<CodeLensList> {
-        console.log('code lens', model.getValue());
-
         return {
           lenses: [
             {

@@ -9,6 +9,6 @@ export class JsonSchemaService {
   constructor(private http: HttpClient) {}
 
   load(): Observable<any> {
-    return this.http.get('http://localhost:4203/assets/definitions.json');
+    return this.http.get('/assets/definitions.json');
   }
 }

@@ -133,6 +133,7 @@ describe('YamlDocument', () => {
         args: { value: value1, absPos: 2 },
         want: {
           name: 'foo',
+          path: ['foo'],
           range: {
             endColumn: 4,
             endLineNumber: 1,
@@ -146,6 +147,7 @@ describe('YamlDocument', () => {
         args: { value: value1, absPos: 7 },
         want: {
           name: 'bar',
+          path: ['foo', 'bar'],
           range: {
             endColumn: 6,
             endLineNumber: 2,
@@ -159,6 +161,7 @@ describe('YamlDocument', () => {
         args: { value: value2, absPos: 22 },
         want: {
           name: 'foo',
+          path: ['foo', 'foo'],
           range: {
             endColumn: 8,
             endLineNumber: 3,

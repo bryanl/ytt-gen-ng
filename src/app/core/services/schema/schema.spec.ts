@@ -1,59 +1,10 @@
 import { Schema, SchemaDefinition, SchemaDoc } from './schema';
 
-describe('Schema', () => {
-  describe('get', () => {
-    let schema: Schema;
-
-    let definitions: string;
-
-    beforeAll(() => {
-      definitions = JSON.stringify(definitionSource);
-    });
-
-    beforeEach(() => {
-      schema = new Schema(definitions);
-    });
-
-    describe('item with no refs', () => {
-      it('returns a definition if it exists', () => {
-        expect(schema.get('other')).toEqual(definitionSource.definitions.other);
-      });
-    });
-
-    describe('item with nested refs', () => {
-      it('returns a definition if it exists', () => {
-        const foo: SchemaDefinition = {
-          description: 'this is foo',
-          properties: {
-            metadata: {
-              properties: {
-                other: {
-                  description: 'other in metadata',
-                  properties: {
-                    name: {
-                      description: 'name',
-                      type: ['string'],
-                    },
-                  },
-                },
-              },
-              description: 'metadata in foo',
-            },
-          },
-        };
-        const x = schema.get('foo');
-        console.log(JSON.stringify(x));
-
-        expect(schema.get('foo')).toEqual(foo);
-      });
-    });
-  });
-});
-
 const definitionSource: SchemaDoc = {
   definitions: {
     foo: {
       description: 'this is foo',
+      type: 'object',
       properties: {
         metadata: {
           $ref: '#/definitions/metadata',
@@ -63,6 +14,7 @@ const definitionSource: SchemaDoc = {
     },
     metadata: {
       description: 'metadata',
+      type: 'object',
       properties: {
         other: {
           description: 'other in metadata',
@@ -72,6 +24,7 @@ const definitionSource: SchemaDoc = {
     },
     other: {
       description: 'other',
+      type: 'object',
       properties: {
         name: {
           description: 'name',
@@ -79,5 +32,151 @@ const definitionSource: SchemaDoc = {
         },
       },
     },
+    arrayContainer: {
+      description: 'array container',
+      type: 'object',
+      properties: {
+        array1: {
+          description: 'array1',
+          type: 'array',
+          items: {
+            type: 'object',
+            description: 'embedded object',
+            properties: {
+              field1: {
+                description: 'field1',
+                type: 'string',
+              },
+            },
+          },
+        },
+        array2: {
+          description: 'array2',
+          type: 'array',
+          items: {
+            $ref: '#/definitions/other',
+          },
+        },
+      },
+    },
   },
 };
+
+const expandedFoo: SchemaDefinition = {
+  description: 'this is foo',
+  type: 'object',
+  properties: {
+    metadata: {
+      description: 'metadata in foo',
+      type: 'object',
+      properties: {
+        other: {
+          description: 'other in metadata',
+          type: 'object',
+          properties: {
+            name: {
+              description: 'name',
+              type: ['string'],
+            },
+          },
+        },
+      },
+    },
+  },
+};
+
+describe('Schema', () => {
+  describe('get', () => {
+    let schema: Schema;
+
+    beforeEach(() => {
+      schema = new Schema(definitionSource);
+    });
+
+    interface Test {
+      name: string;
+      args: {
+        id: string;
+      };
+      want?: SchemaDefinition;
+      wantErr?: boolean;
+    }
+
+    const tests: Test[] = [
+      {
+        name: 'item with no refs',
+        args: { id: 'other' },
+        want: definitionSource.definitions.other,
+      },
+      {
+        name: 'item with nested refs',
+        args: { id: 'foo' },
+        want: expandedFoo,
+      },
+      {
+        name: 'get from array',
+        args: { id: 'arrayContainer' },
+        want: definitionSource.definitions.arrayContainer,
+      },
+    ];
+
+    tests.forEach((tt) => {
+      it(tt.name, () => {
+        tt.wantErr
+          ? expect(() => schema.get(tt.args.id)).toThrow()
+          : expect(schema.get(tt.args.id)).toEqual(tt.want);
+      });
+    });
+  });
+
+  describe('description', () => {
+    let schema: Schema;
+
+    beforeEach(() => {
+      schema = new Schema(definitionSource);
+    });
+
+    interface Test {
+      name: string;
+      args: {
+        id: string;
+        path: string[];
+      };
+      want?: string;
+      wantErr?: boolean;
+    }
+
+    const tests: Test[] = [
+      {
+        name: 'at root',
+        args: { id: 'foo', path: ['metadata'] },
+        want: 'metadata in foo',
+      },
+      {
+        name: 'nested',
+        args: { id: 'foo', path: ['metadata', 'other', 'name'] },
+        want: 'name',
+      },
+      {
+        name: 'in array',
+        args: { id: 'arrayContainer', path: ['array1', 'field1'] },
+        want: 'field1',
+      },
+      {
+        name: 'path not found',
+        args: { id: 'foo', path: ['not-found'] },
+        wantErr: true,
+      },
+    ];
+
+    tests.forEach((tt) => {
+      it(tt.name, () => {
+        tt.wantErr
+          ? expect(() => schema.description(tt.args.id, tt.args.path)).toThrow()
+          : expect(schema.description(tt.args.id, tt.args.path)).toEqual(
+              tt.want
+            );
+      });
+    });
+  });
+});
