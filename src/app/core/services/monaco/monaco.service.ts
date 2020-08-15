@@ -18,6 +18,7 @@ export class MonacoService {
         theme: 'vs-dark',
         language: 'yaml',
         scrollBeyondLastLine: false,
+        readOnly: true,
       } as IStandaloneEditorConstructionOptions,
       onMonacoLoad: () => {
         console.log('new onMonacoLoad');
@@ -42,10 +43,9 @@ export class MonacoService {
             contents: [
               { value: `**${got.name}**` },
               {
+                isTrusted: true,
                 value:
-                  '```html\n' +
-                  'This is a placeholder for something more interesting' +
-                  '\n```',
+                  'This is a placeholder for something more interesting [(click me)](http://google.com)',
               },
             ],
           };
@@ -71,6 +71,8 @@ export class MonacoService {
         model: ITextModel,
         token: monaco.CancellationToken
       ): monaco.languages.ProviderResult<CodeLensList> {
+        console.log('code lens', model.getValue());
+
         return {
           lenses: [
             {
