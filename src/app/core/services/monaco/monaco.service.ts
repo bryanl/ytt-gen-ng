@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { NgxMonacoEditorConfig } from 'ngx-monaco-editor';
 import { YamlDocument } from './yaml-document';
+import { SchemaService } from '../schema/schema.service';
 import IStandaloneEditorConstructionOptions = monaco.editor.IStandaloneEditorConstructionOptions;
 import IStandaloneCodeEditor = monaco.editor.IStandaloneCodeEditor;
 import ITextModel = monaco.editor.ITextModel;
@@ -10,7 +11,11 @@ import CodeLensList = monaco.languages.CodeLensList;
   providedIn: 'root',
 })
 export class MonacoService {
-  constructor() {}
+  constructor(private schemaService: SchemaService) {
+    schemaService.getSchema().subscribe((data) => {
+      console.log('got schema', data);
+    });
+  }
 
   config(): NgxMonacoEditorConfig {
     return {
@@ -46,6 +51,10 @@ export class MonacoService {
                 isTrusted: true,
                 value:
                   'This is a placeholder for something more interesting [(click me)](http://google.com)',
+              },
+              {
+                isTrusted: true,
+                value: '[Link 1](http://google.com)',
               },
             ],
           };

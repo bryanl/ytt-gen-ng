@@ -1,6 +1,5 @@
 import { DocumentPosition, Value, YamlDocument } from './yaml-document';
 import IPosition = monaco.IPosition;
-import * as YAMLParser from 'yaml-ast-parser';
 
 describe('YamlDocument', () => {
   describe('find absolute position given a monaco position', () => {
