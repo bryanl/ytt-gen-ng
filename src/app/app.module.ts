@@ -13,9 +13,10 @@ import { HttpClientModule } from '@angular/common/http';
 import { CoreModule } from './core/core.module';
 import { ValueModalComponent } from './value-modal/value-modal.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
+import { WorkbenchComponent } from './workbench/workbench.component';
 
 @NgModule({
-  declarations: [AppComponent, YttEditorComponent, UploadModalComponent, ValueModalComponent, SidebarComponent],
+  declarations: [AppComponent, YttEditorComponent, UploadModalComponent, ValueModalComponent, SidebarComponent, WorkbenchComponent],
   imports: [
     // angular
     BrowserAnimationsModule,
