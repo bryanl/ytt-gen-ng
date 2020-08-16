@@ -2,13 +2,28 @@
   <clr-modal [(clrModalOpen)]="isOpen">
     <h3 class="modal-title">Field: {{ field.value.name }}</h3>
     <div class="modal-body">
-      <p>
-        {{ field.kubernetesObject.groupVersionKind() | apiVersion }}
-        [{{ field.value.path | objectPath }}]
-      </p>
-      <p>
-        {{ description() }}
-      </p>
+      <table class="table table-compact table-noborder table-vertical">
+        <tbody>
+          <tr>
+            <th>TypeMeta</th>
+            <td>
+              {{ field.kubernetesObject.groupVersionKind() | apiVersion }}
+            </td>
+          </tr>
+          <tr>
+            <th>Object Path</th>
+            <td>[{{ field.value.path | objectPath }}]</td>
+          </tr>
+          <tr>
+            <th>Description</th>
+            <td>{{ description() }}</td>
+          </tr>
+          <tr>
+            <th>Supported Field Type</th>
+            <td>{{ type() }}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </clr-modal>
 </ng-container>

@@ -129,6 +129,55 @@ describe('Schema', () => {
     });
   });
 
+  describe('type', () => {
+    let schema: Schema;
+
+    beforeEach(() => {
+      schema = new Schema(definitionSource);
+    });
+
+    interface Test {
+      name: string;
+      args: {
+        id: string;
+        path: string[];
+      };
+      want?: string[];
+      wantErr?: boolean;
+    }
+
+    const tests: Test[] = [
+      {
+        name: 'at root',
+        args: { id: 'foo', path: ['metadata'] },
+        want: ['object'],
+      },
+      {
+        name: 'nested',
+        args: { id: 'foo', path: ['metadata', 'other', 'name'] },
+        want: ['string'],
+      },
+      {
+        name: 'in array',
+        args: { id: 'arrayContainer', path: ['array1', 'field1'] },
+        want: ['string'],
+      },
+      {
+        name: 'path not found',
+        args: { id: 'foo', path: ['not-found'] },
+        wantErr: true,
+      },
+    ];
+
+    tests.forEach((tt) => {
+      it(tt.name, () => {
+        tt.wantErr
+          ? expect(() => schema.type(tt.args.id, tt.args.path)).toThrow()
+          : expect(schema.type(tt.args.id, tt.args.path)).toEqual(tt.want);
+      });
+    });
+  });
+
   describe('description', () => {
     let schema: Schema;
 

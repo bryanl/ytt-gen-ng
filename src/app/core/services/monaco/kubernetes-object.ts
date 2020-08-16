@@ -32,6 +32,10 @@ export class KubernetesObject {
     return this.schema.description(this.definitionId(), path);
   }
 
+  type(...path: string[]): string[] {
+    return this.schema.type(this.definitionId(), path);
+  }
+
   private groupVersion(): GroupVersion {
     const apiVersion = this.parsed.apiVersion as string;
     const parts = apiVersion.split('/');

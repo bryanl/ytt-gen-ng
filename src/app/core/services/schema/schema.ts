@@ -13,6 +13,7 @@ export interface SchemaDoc {
 export interface ISchema {
   get(id: string): SchemaDefinition;
   description(id: string, path: string[]): string;
+  type(id: string, path: string[]): string[];
 }
 
 export class Schema implements ISchema {
@@ -64,6 +65,33 @@ export class Schema implements ISchema {
 
       if (!def.properties) {
         return '';
+      }
+
+      const name = p.shift();
+      const prop = def.properties[name];
+      return visit(prop, p);
+    };
+
+    return visit(this.get(id), path);
+  }
+
+  type(id: string, path: string[]): string[] {
+    const visit = (def: SchemaDefinition, p: string[]): string[] => {
+      if (p.length === 0) {
+        if (!def.type) {
+          return [];
+        } else if (Array.isArray(def.type)) {
+          return def.type;
+        }
+        return [def.type];
+      }
+
+      if (def && hasType(def, 'array')) {
+        return visit(def.items, p);
+      }
+
+      if (!def.properties) {
+        return [];
       }
 
       const name = p.shift();

@@ -28,4 +28,8 @@ export class ValueModalComponent implements OnInit {
   description() {
     return this.field.kubernetesObject.description(...this.field.value.path);
   }
+
+  type() {
+    return this.field.kubernetesObject.type(...this.field.value.path);
+  }
 }
