@@ -8,7 +8,7 @@ interface Positionable {
 }
 
 export interface Value {
-  range: IRange;
+  keyRange: IRange;
   name: string;
   path: string[];
 }
@@ -109,50 +109,64 @@ export class YamlDocument {
   }
 
   valueAt(absPos: number): Value {
-    return this.valueVisitor(this.yamlNode, absPos, []);
+    const visitor = (doc: YAMLParser.YAMLNode, path: string[]): Value => {
+      switch (doc.kind) {
+        case YAMLParser.Kind.MAP:
+          const ym = doc as YAMLParser.YamlMap;
+          const cur = ym.mappings.find((m) => inRange(m, absPos));
+
+          if (!cur) {
+            return undefined;
+          }
+
+          if (inRange(cur.key, absPos)) {
+            return this.valueFromScalar(cur.key, path);
+          }
+          return visitor(cur.value, [...path, cur.key.value]);
+
+        case YAMLParser.Kind.SEQ:
+          const seq = doc as YAMLParser.YAMLSequence;
+          const seqCur = seq.items.find((s) => inRange(s, absPos));
+          if (seqCur) {
+            return visitor(seqCur, [...path]);
+          }
+          return undefined;
+      }
+
+      return undefined;
+    };
+
+    return visitor(this.yamlNode, []);
   }
 
-  valueVisitor(
-    doc: YAMLParser.YAMLNode,
-    absPos: number,
-    path: string[]
-  ): Value {
-    switch (doc.kind) {
-      case YAMLParser.Kind.MAP:
-        const ym = doc as YAMLParser.YamlMap;
-        const cur = ym.mappings.find((m) => inRange(m, absPos));
-
-        if (!cur) {
-          return undefined;
-        }
-
-        if (inRange(cur.key, absPos)) {
-          const start = this.position(cur.key.startPosition);
-          const end = this.position(cur.key.endPosition);
-
-          return {
-            path: [...path, cur.key.value],
-            name: cur.key.value,
-            range: {
-              endColumn: end.position.column,
-              endLineNumber: end.position.lineNumber,
-              startColumn: start.position.column,
-              startLineNumber: start.position.lineNumber,
-            },
-          };
-        }
-        return this.valueVisitor(cur.value, absPos, [...path, cur.key.value]);
-
-      case YAMLParser.Kind.SEQ:
-        const seq = doc as YAMLParser.YAMLSequence;
-        const seqCur = seq.items.find((s) => inRange(s, absPos));
-        if (seqCur) {
-          return this.valueVisitor(seqCur, absPos, [...path]);
-        }
-        return undefined;
+  lineValue(line: number): Value {
+    let done = false;
+    let curColumn = 1;
+    let absPos: number;
+    while (!done) {
+      absPos = this.absPosition({ column: curColumn, lineNumber: line });
+      const db = this.position(absPos);
+      curColumn++;
+      done = /[^\s]/.test(db.character);
     }
 
-    return undefined;
+    return this.valueAt(absPos);
+  }
+
+  private valueFromScalar(s: YAMLParser.YAMLScalar, path: string[]): Value {
+    const start = this.position(s.startPosition);
+    const end = this.position(s.endPosition);
+
+    return {
+      path: [...path, s.value],
+      name: s.value,
+      keyRange: {
+        endColumn: end.position.column,
+        endLineNumber: end.position.lineNumber,
+        startColumn: start.position.column,
+        startLineNumber: start.position.lineNumber,
+      },
+    };
   }
 }
 

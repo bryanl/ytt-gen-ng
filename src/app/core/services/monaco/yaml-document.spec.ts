@@ -134,7 +134,7 @@ describe('YamlDocument', () => {
         want: {
           name: 'foo',
           path: ['foo'],
-          range: {
+          keyRange: {
             endColumn: 4,
             endLineNumber: 1,
             startColumn: 1,
@@ -148,7 +148,7 @@ describe('YamlDocument', () => {
         want: {
           name: 'bar',
           path: ['foo', 'bar'],
-          range: {
+          keyRange: {
             endColumn: 6,
             endLineNumber: 2,
             startColumn: 3,
@@ -162,7 +162,7 @@ describe('YamlDocument', () => {
         want: {
           name: 'foo',
           path: ['foo', 'foo'],
-          range: {
+          keyRange: {
             endColumn: 8,
             endLineNumber: 3,
             startColumn: 5,
@@ -171,7 +171,7 @@ describe('YamlDocument', () => {
         },
       },
       {
-        name: 'find value',
+        name: 'out of bounds',
         args: { value: value1, absPos: 13 },
         want: undefined,
       },
@@ -184,6 +184,66 @@ describe('YamlDocument', () => {
         tt.wantErr
           ? expect(() => doc.valueAt(tt.args.absPos)).toThrow()
           : expect(doc.valueAt(tt.args.absPos)).toEqual(tt.want);
+      });
+    });
+  });
+
+  describe('find value on line', () => {
+    const value1 = 'foo:\n  bar: baz';
+
+    interface Test {
+      name: string;
+      args: {
+        value: string;
+        line: number;
+      };
+      want?: Value;
+      wantErr?: boolean;
+    }
+
+    const tests: Test[] = [
+      {
+        name: 'find key in root',
+        args: { value: value1, line: 1 },
+        want: {
+          name: 'foo',
+          path: ['foo'],
+          keyRange: {
+            endColumn: 4,
+            endLineNumber: 1,
+            startColumn: 1,
+            startLineNumber: 1,
+          },
+        },
+      },
+      {
+        name: 'find nested key',
+        args: { value: value1, line: 2 },
+        want: {
+          name: 'bar',
+          path: ['foo', 'bar'],
+          keyRange: {
+            endColumn: 6,
+            endLineNumber: 2,
+            startColumn: 3,
+            startLineNumber: 2,
+          },
+        },
+      },
+      {
+        name: 'out of bounds',
+        args: { value: value1, line: 4 },
+        wantErr: true,
+      },
+    ];
+
+    tests.forEach((tt) => {
+      it(tt.name, () => {
+        const doc = new YamlDocument(tt.args.value);
+
+        tt.wantErr
+          ? expect(() => doc.lineValue(tt.args.line)).toThrow()
+          : expect(doc.lineValue(tt.args.line)).toEqual(tt.want);
       });
     });
   });

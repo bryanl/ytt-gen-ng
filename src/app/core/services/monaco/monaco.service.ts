@@ -33,11 +33,15 @@ export class MonacoService {
         language: 'yaml',
         scrollBeyondLastLine: false,
         readOnly: true,
+        glyphMargin: true,
+        minimap: {
+          enabled: false,
+        },
       } as IStandaloneEditorConstructionOptions,
     };
   }
 
-  registerYamlHoverProvider() {
+  registerYamlHoverProvider(editor: IStandaloneCodeEditor) {
     this.schema$
       .pipe(
         filter((x) => x !== undefined),
@@ -58,16 +62,12 @@ export class MonacoService {
 
             if (value) {
               return {
-                range: value.range,
+                range: value.keyRange,
                 contents: [
-                  { value: `**${value.name}**` },
+                  // { value: `**${value.name}**` },
                   {
                     isTrusted: true,
                     value: ko.description(...value.path),
-                  },
-                  {
-                    isTrusted: true,
-                    value: '[Link 1](http://google.com)',
                   },
                 ],
               };
