@@ -1,5 +1,6 @@
 import { DocumentPosition, Value, YamlDocument } from './yaml-document';
 import IPosition = monaco.IPosition;
+import * as YAMLParser from 'yaml-ast-parser';
 
 describe('YamlDocument', () => {
   describe('find absolute position given a monaco position', () => {
@@ -134,6 +135,7 @@ describe('YamlDocument', () => {
         want: {
           name: 'foo',
           path: ['foo'],
+          currentValue: undefined,
           keyRange: {
             endColumn: 4,
             endLineNumber: 1,
@@ -148,6 +150,7 @@ describe('YamlDocument', () => {
         want: {
           name: 'bar',
           path: ['foo', 'bar'],
+          currentValue: undefined,
           keyRange: {
             endColumn: 6,
             endLineNumber: 2,
@@ -162,6 +165,7 @@ describe('YamlDocument', () => {
         want: {
           name: 'foo',
           path: ['foo', 'foo'],
+          currentValue: undefined,
           keyRange: {
             endColumn: 8,
             endLineNumber: 3,
@@ -208,6 +212,13 @@ describe('YamlDocument', () => {
         want: {
           name: 'foo',
           path: ['foo'],
+          currentValue: {
+            startPosition: 0,
+            endPosition: 1,
+            kind: YAMLParser.Kind.MAP,
+            parent: null,
+            errors: [],
+          },
           keyRange: {
             endColumn: 4,
             endLineNumber: 1,
@@ -222,6 +233,7 @@ describe('YamlDocument', () => {
         want: {
           name: 'bar',
           path: ['foo', 'bar'],
+          currentValue: undefined,
           keyRange: {
             endColumn: 6,
             endLineNumber: 2,

@@ -75,10 +75,7 @@ export class YttEditorComponent implements OnChanges {
     editor.deltaDecorations([], decorations);
 
     this.monacoService.handleMargin(editor).subscribe((field) => {
-      this.ngZone.run(() => {
-        console.log('is in angular zone?', NgZone.isInAngularZone());
-        this.clientField.emit(field);
-      });
+      this.ngZone.run(() => this.clientField.emit(field));
     });
 
     this.monacoService.registerYamlHoverProvider(editor);

@@ -22,8 +22,18 @@ export class ValueModalComponent implements OnInit {
     this.field = field;
     this.isOpen = true;
 
+    console.log('the field is', field);
+
     this.form = new FormGroup({
-      value: new FormControl('wtf', Validators.required),
+      options: new FormGroup({
+        action: new FormControl('add'),
+      }),
+      choose: new FormGroup({
+        value: new FormControl(''),
+      }),
+      add: new FormGroup({
+        value: new FormControl('wtf', Validators.required),
+      }),
     });
   }
 

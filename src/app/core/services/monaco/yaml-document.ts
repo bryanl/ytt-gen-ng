@@ -11,6 +11,7 @@ export interface Value {
   keyRange: IRange;
   name: string;
   path: string[];
+  currentValue: YAMLParser.YAMLNode;
 }
 
 export interface DocumentPosition {
@@ -120,7 +121,7 @@ export class YamlDocument {
           }
 
           if (inRange(cur.key, absPos)) {
-            return this.valueFromScalar(cur.key, path);
+            return this.valueFromScalar(cur.key, cur.value, path);
           }
           return visitor(cur.value, [...path, cur.key.value]);
 
@@ -153,13 +154,18 @@ export class YamlDocument {
     return this.valueAt(absPos);
   }
 
-  private valueFromScalar(s: YAMLParser.YAMLScalar, path: string[]): Value {
-    const start = this.position(s.startPosition);
-    const end = this.position(s.endPosition);
+  private valueFromScalar(
+    key: YAMLParser.YAMLScalar,
+    value: YAMLParser.YAMLNode,
+    path: string[]
+  ): Value {
+    const start = this.position(key.startPosition);
+    const end = this.position(key.endPosition);
 
     return {
-      path: [...path, s.value],
-      name: s.value,
+      path: [...path, key.value],
+      name: key.value,
+      currentValue: value,
       keyRange: {
         endColumn: end.position.column,
         endLineNumber: end.position.lineNumber,

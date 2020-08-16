@@ -1,6 +1,6 @@
 <form *ngIf="form" clrForm [formGroup]="form">
   <ng-container *ngIf="field">
-    <clr-modal [(clrModalOpen)]="isOpen">
+    <clr-modal [(clrModalOpen)]="isOpen" clrModalSize="lg">
       <h3 class="modal-title">Field: {{ field.value.name }}</h3>
       <div class="modal-body">
         <table class="table table-compact table-noborder table-vertical">
@@ -25,6 +25,54 @@
             </tr>
           </tbody>
         </table>
+
+        <clr-radio-container clrInline formGroupName="options">
+          <label>Value action</label>
+          <clr-radio-wrapper>
+            <input
+              type="radio"
+              clrRadio
+              required
+              value="add"
+              formControlName="action"
+            />
+            <label>Add</label>
+          </clr-radio-wrapper>
+          <clr-radio-wrapper>
+            <input
+              type="radio"
+              clrRadio
+              required
+              value="select"
+              formControlName="action"
+            />
+            <label>Choose</label>>
+          </clr-radio-wrapper>
+          <clr-control-error>This field is required!</clr-control-error>
+        </clr-radio-container>
+
+        <div class="clr-row">
+          <div class="clr-col-12">
+            <div class="card" formGroupName="add">
+              <div class="card-header">
+                Create new value
+              </div>
+              <div class="card-block">
+                <div class="card-text">
+                  <clr-input-container>
+                    <label>My name</label>
+                    <input
+                      clrInput
+                      placeholder="Fill me in, scotty!"
+                      name="name"
+                      formControlName="value"
+                    />
+                  </clr-input-container>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="modal-footer">
         <button
