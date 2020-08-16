@@ -1,16 +1,10 @@
 import * as YAML from 'yaml';
 import { ISchema } from '../schema/schema';
-
-export interface GroupVersionKind {
-  group: string;
-  version: string;
-  kind: string;
-}
-
-interface GroupVersion {
-  group: string;
-  version: string;
-}
+import {
+  GroupVersion,
+  GroupVersionKind,
+  IGroupVersionKind,
+} from './group-version-kind';
 
 export class KubernetesObject {
   private parsed: any;
@@ -19,12 +13,11 @@ export class KubernetesObject {
     this.parsed = YAML.parse(source);
   }
 
-  groupVersionKind(): GroupVersionKind {
-    const groupVersion = this.groupVersion();
-    return {
-      ...groupVersion,
+  groupVersionKind(): IGroupVersionKind {
+    return new GroupVersionKind({
+      groupVersion: this.groupVersion(),
       kind: this.parsed.kind,
-    };
+    });
   }
 
   definitionId(): string {

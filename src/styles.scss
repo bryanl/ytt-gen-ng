@@ -2,6 +2,7 @@
 
 .myGlyphMarginClass {
   background: red;
+  cursor: pointer;
 
   &:hover::before {
     content: "🍔";

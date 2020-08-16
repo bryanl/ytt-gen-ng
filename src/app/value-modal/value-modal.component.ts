@@ -1,5 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { Value } from '../core/services/monaco/yaml-document';
+import { Component, NgZone, OnInit } from '@angular/core';
+import { Field } from '../ytt-editor/ytt-editor.component';
 
 @Component({
   selector: 'app-value-modal',
@@ -9,18 +9,23 @@ import { Value } from '../core/services/monaco/yaml-document';
 export class ValueModalComponent implements OnInit {
   isOpen = false;
 
-  value: Value;
+  field: Field;
 
   constructor() {}
 
   ngOnInit(): void {}
 
-  open(value: Value) {
-    this.value = value;
+  open(field: Field) {
+    console.log('opening value modal', field, NgZone.isInAngularZone());
+    this.field = field;
     this.isOpen = true;
   }
 
   close() {
     this.isOpen = false;
+  }
+
+  description() {
+    return this.field.kubernetesObject.description(...this.field.value.path);
   }
 }

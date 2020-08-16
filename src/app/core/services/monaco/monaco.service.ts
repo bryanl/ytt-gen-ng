@@ -2,14 +2,15 @@ import { Injectable } from '@angular/core';
 import { NgxMonacoEditorConfig } from 'ngx-monaco-editor';
 import { YamlDocument } from './yaml-document';
 import { SchemaService } from '../schema/schema.service';
+import { filter, take } from 'rxjs/operators';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { Schema } from '../schema/schema';
+import { KubernetesObject } from './kubernetes-object';
+import { Field } from '../../../ytt-editor/ytt-editor.component';
 import IStandaloneEditorConstructionOptions = monaco.editor.IStandaloneEditorConstructionOptions;
 import IStandaloneCodeEditor = monaco.editor.IStandaloneCodeEditor;
 import ITextModel = monaco.editor.ITextModel;
 import CodeLensList = monaco.languages.CodeLensList;
-import { filter, take } from 'rxjs/operators';
-import { BehaviorSubject, Subject } from 'rxjs';
-import { Schema } from '../schema/schema';
-import { KubernetesObject } from './kubernetes-object';
 
 @Injectable({
   providedIn: 'root',
@@ -41,42 +42,66 @@ export class MonacoService {
     };
   }
 
-  registerYamlHoverProvider(editor: IStandaloneCodeEditor) {
-    this.schema$
-      .pipe(
-        filter((x) => x !== undefined),
-        take(1)
-      )
-      .subscribe((schema) => {
-        monaco.languages.registerHoverProvider('yaml', {
-          provideHover(
-            model: monaco.editor.ITextModel,
-            position: monaco.Position
-          ): monaco.languages.ProviderResult<monaco.languages.Hover> {
-            const doc = new YamlDocument(model.getValue());
-            const pos = doc.absPosition(position);
+  handleMargin(editor: IStandaloneCodeEditor) {
+    return new Observable<Field>((observer) => {
+      this.currentSchema().subscribe((schema) => {
+        const doc = new YamlDocument(editor.getValue());
+        const source = editor.getValue();
 
-            const ko = new KubernetesObject(model.getValue(), schema);
+        editor.onMouseDown((e) => {
+          switch (e.target.type) {
+            case monaco.editor.MouseTargetType.GUTTER_GLYPH_MARGIN:
+              const value = doc.lineValue(e.target.position.lineNumber);
 
-            const value = doc.valueAt(pos);
-
-            if (value) {
-              return {
-                range: value.keyRange,
-                contents: [
-                  // { value: `**${value.name}**` },
-                  {
-                    isTrusted: true,
-                    value: ko.description(...value.path),
-                  },
-                ],
-              };
-            }
-
-            return undefined;
-          },
+              observer.next({
+                kubernetesObject: new KubernetesObject(source, schema),
+                value,
+              });
+              break;
+          }
         });
       });
+    });
+  }
+
+  currentSchema(): Observable<Schema> {
+    return this.schema$.pipe(
+      filter((x) => x !== undefined),
+      take(1)
+    );
+  }
+
+  registerYamlHoverProvider(editor: IStandaloneCodeEditor) {
+    this.currentSchema().subscribe((schema) => {
+      monaco.languages.registerHoverProvider('yaml', {
+        provideHover(
+          model: monaco.editor.ITextModel,
+          position: monaco.Position
+        ): monaco.languages.ProviderResult<monaco.languages.Hover> {
+          const doc = new YamlDocument(model.getValue());
+          const pos = doc.absPosition(position);
+
+          const ko = new KubernetesObject(model.getValue(), schema);
+
+          const value = doc.valueAt(pos);
+
+          if (value) {
+            return {
+              range: value.keyRange,
+              contents: [
+                // { value: `**${value.name}**` },
+                {
+                  isTrusted: true,
+                  value: ko.description(...value.path),
+                },
+              ],
+            };
+          }
+
+          return undefined;
+        },
+      });
+    });
   }
 
   createTestProvider(editor: IStandaloneCodeEditor) {

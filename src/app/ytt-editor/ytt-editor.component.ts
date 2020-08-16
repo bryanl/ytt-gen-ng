@@ -14,8 +14,14 @@ import {
   NgxEditorModel,
 } from 'ngx-monaco-editor';
 import { MonacoService } from '../core/services/monaco/monaco.service';
+import { Value } from '../core/services/monaco/yaml-document';
+import { KubernetesObject } from '../core/services/monaco/kubernetes-object';
 import IStandaloneCodeEditor = monaco.editor.IStandaloneCodeEditor;
-import { Value, YamlDocument } from '../core/services/monaco/yaml-document';
+
+export interface Field {
+  kubernetesObject: KubernetesObject;
+  value: Value;
+}
 
 @Component({
   selector: 'app-editor',
@@ -36,7 +42,7 @@ export class YttEditorComponent implements OnChanges {
 
   @Input() code: string;
 
-  @Output() clickValue: EventEmitter<Value> = new EventEmitter<Value>();
+  @Output() clientField: EventEmitter<Field> = new EventEmitter<Field>();
 
   model: NgxEditorModel = {
     value: 'foo: bar',
@@ -52,10 +58,8 @@ export class YttEditorComponent implements OnChanges {
   }
 
   onInit(editor: IStandaloneCodeEditor) {
-    const doc = new YamlDocument(editor.getValue());
-
-    const decorations = editor
-      .getValue()
+    const source = editor.getValue();
+    const decorations = source
       .split('\n')
       .map<monaco.editor.IModelDeltaDecoration>((line, i) => {
         return {
@@ -70,15 +74,11 @@ export class YttEditorComponent implements OnChanges {
 
     editor.deltaDecorations([], decorations);
 
-    editor.onMouseDown((e) => {
-      switch (e.target.type) {
-        case monaco.editor.MouseTargetType.GUTTER_GLYPH_MARGIN:
-          const value = doc.lineValue(e.target.position.lineNumber);
-          this.ngZone.run(() => {
-            this.clickValue.emit(value);
-          });
-          break;
-      }
+    this.monacoService.handleMargin(editor).subscribe((field) => {
+      this.ngZone.run(() => {
+        console.log('is in angular zone?', NgZone.isInAngularZone());
+        this.clientField.emit(field);
+      });
     });
 
     this.monacoService.registerYamlHoverProvider(editor);

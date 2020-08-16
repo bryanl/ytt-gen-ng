@@ -4,6 +4,7 @@ import { UrlService } from './url.service';
 import { take } from 'rxjs/operators';
 import { Value } from './core/services/monaco/yaml-document';
 import { ValueModalComponent } from './value-modal/value-modal.component';
+import { Field } from './ytt-editor/ytt-editor.component';
 
 @Component({
   selector: 'app-root',
@@ -34,7 +35,7 @@ export class AppComponent implements AfterViewInit {
       });
   }
 
-  valueClicked(value: Value) {
-    this.valueModal.open(value);
+  fieldClicked(field: Field) {
+    this.valueModal.open(field);
   }
 }

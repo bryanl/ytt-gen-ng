@@ -1,6 +1,14 @@
-<clr-modal [(clrModalOpen)]="isOpen">
-  <h3 class="modal-title">Value</h3>
-  <div class="modal-body">
-    <pre>{{ value | json }}</pre>
-  </div>
-</clr-modal>
+<ng-container *ngIf="field">
+  <clr-modal [(clrModalOpen)]="isOpen">
+    <h3 class="modal-title">Field: {{ field.value.name }}</h3>
+    <div class="modal-body">
+      <p>
+        {{ field.kubernetesObject.groupVersionKind() | apiVersion }}
+        [{{ field.value.path | objectPath }}]
+      </p>
+      <p>
+        {{ description() }}
+      </p>
+    </div>
+  </clr-modal>
+</ng-container>
