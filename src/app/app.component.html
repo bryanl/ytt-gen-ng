@@ -7,14 +7,24 @@
       </a>
     </div>
   </header>
+  <nav class="subnav">
+    <ul class="nav">
+      <li class="nav-item">
+        <a class="nav-link" (click)="uploadModal.open()">Upload</a>
+      </li>
+    </ul>
+  </nav>
   <div class="content-container">
     <div class="content-area">
-      <app-editor *ngIf="code.length > 0" [code]="code"></app-editor>
+      <app-editor
+        *ngIf="code.length > 0"
+        [code]="code"
+        (clickValue)="valueClicked($event)"
+      ></app-editor>
     </div>
   </div>
 </div>
 
-<app-upload-modal
-  [isOpen]="modalOpen()"
-  (url)="updateCode($event)"
-></app-upload-modal>
+<app-upload-modal #uploadModal (url)="updateCode($event)"></app-upload-modal>
+
+<app-value-modal #valueModal></app-value-modal>

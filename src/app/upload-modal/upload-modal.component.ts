@@ -7,9 +7,9 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
   styleUrls: ['./upload-modal.component.scss'],
 })
 export class UploadModalComponent {
-  @Input() isOpen = false;
-
   @Output() url: EventEmitter<string> = new EventEmitter<string>();
+
+  isOpen = false;
 
   form = new FormGroup({
     url: new FormControl(sampleURL, [
@@ -19,6 +19,14 @@ export class UploadModalComponent {
   });
 
   constructor() {}
+
+  open() {
+    this.isOpen = true;
+  }
+
+  close() {
+    this.isOpen = false;
+  }
 
   resetForm() {
     this.form.reset();

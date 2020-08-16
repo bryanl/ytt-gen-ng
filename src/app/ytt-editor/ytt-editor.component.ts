@@ -1,7 +1,10 @@
 import {
   Component,
+  EventEmitter,
   Input,
+  NgZone,
   OnChanges,
+  Output,
   SimpleChanges,
   ViewChild,
 } from '@angular/core';
@@ -12,7 +15,7 @@ import {
 } from 'ngx-monaco-editor';
 import { MonacoService } from '../core/services/monaco/monaco.service';
 import IStandaloneCodeEditor = monaco.editor.IStandaloneCodeEditor;
-import { YamlDocument } from '../core/services/monaco/yaml-document';
+import { Value, YamlDocument } from '../core/services/monaco/yaml-document';
 
 @Component({
   selector: 'app-editor',
@@ -33,12 +36,14 @@ export class YttEditorComponent implements OnChanges {
 
   @Input() code: string;
 
+  @Output() clickValue: EventEmitter<Value> = new EventEmitter<Value>();
+
   model: NgxEditorModel = {
     value: 'foo: bar',
     language: 'yaml',
   };
 
-  constructor(private monacoService: MonacoService) {}
+  constructor(private monacoService: MonacoService, private ngZone: NgZone) {}
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.code.currentValue) {
@@ -68,7 +73,10 @@ export class YttEditorComponent implements OnChanges {
     editor.onMouseDown((e) => {
       switch (e.target.type) {
         case monaco.editor.MouseTargetType.GUTTER_GLYPH_MARGIN:
-          console.log(doc.lineValue(e.target.position.lineNumber));
+          const value = doc.lineValue(e.target.position.lineNumber);
+          this.ngZone.run(() => {
+            this.clickValue.emit(value);
+          });
           break;
       }
     });
