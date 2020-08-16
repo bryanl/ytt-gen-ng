@@ -255,7 +255,9 @@ describe('YamlDocument', () => {
 
         tt.wantErr
           ? expect(() => doc.lineValue(tt.args.line)).toThrow()
-          : expect(doc.lineValue(tt.args.line)).toEqual(tt.want);
+          : expect(JSON.stringify(doc.lineValue(tt.args.line))).toEqual(
+              JSON.stringify(tt.want)
+            );
       });
     });
   });
