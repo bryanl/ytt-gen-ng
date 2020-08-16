@@ -147,7 +147,7 @@ export class YamlDocument {
       absPos = this.absPosition({ column: curColumn, lineNumber: line });
       const db = this.position(absPos);
       curColumn++;
-      done = /[^\s]/.test(db.character);
+      done = /[^\s-]/.test(db.character);
     }
 
     return this.valueAt(absPos);
