@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { UploadModalComponent } from './upload-modal/upload-modal.component';
 import { UrlService } from './url.service';
 import { take } from 'rxjs/operators';

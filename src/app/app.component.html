@@ -16,11 +16,21 @@
   </nav>
   <div class="content-container">
     <div class="content-area">
-      <app-editor
-        *ngIf="code.length > 0"
-        [code]="code"
-        (clickValue)="valueClicked($event)"
-      ></app-editor>
+      <div class="ytt-nav">
+        ytt nav
+      </div>
+      <div class="ytt-content">
+        <div class="ytt-editor">
+          <app-editor
+            *ngIf="code.length > 0"
+            [code]="code"
+            (clickValue)="valueClicked($event)"
+          ></app-editor>
+        </div>
+        <div class="ytt-preview">
+          preview
+        </div>
+      </div>
     </div>
   </div>
 </div>
