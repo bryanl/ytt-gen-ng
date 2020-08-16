@@ -1,5 +1,6 @@
-import { Component, NgZone, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Field } from '../ytt-editor/ytt-editor.component';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-value-modal',
@@ -13,12 +14,17 @@ export class ValueModalComponent implements OnInit {
 
   constructor() {}
 
+  form: FormGroup;
+
   ngOnInit(): void {}
 
   open(field: Field) {
-    console.log('opening value modal', field, NgZone.isInAngularZone());
     this.field = field;
     this.isOpen = true;
+
+    this.form = new FormGroup({
+      value: new FormControl('wtf', Validators.required),
+    });
   }
 
   close() {
@@ -31,5 +37,17 @@ export class ValueModalComponent implements OnInit {
 
   type() {
     return this.field.kubernetesObject.type(...this.field.value.path);
+  }
+
+  resetForm() {
+    if (this.form) {
+      this.form.reset();
+    }
+  }
+
+  submit() {
+    if (this.form) {
+      console.log('setttng value', this.form.value);
+    }
   }
 }

@@ -1,29 +1,44 @@
-<ng-container *ngIf="field">
-  <clr-modal [(clrModalOpen)]="isOpen">
-    <h3 class="modal-title">Field: {{ field.value.name }}</h3>
-    <div class="modal-body">
-      <table class="table table-compact table-noborder table-vertical">
-        <tbody>
-          <tr>
-            <th>TypeMeta</th>
-            <td>
-              {{ field.kubernetesObject.groupVersionKind() | apiVersion }}
-            </td>
-          </tr>
-          <tr>
-            <th>Object Path</th>
-            <td>[{{ field.value.path | objectPath }}]</td>
-          </tr>
-          <tr>
-            <th>Description</th>
-            <td>{{ description() }}</td>
-          </tr>
-          <tr>
-            <th>Supported Field Type</th>
-            <td>{{ type() }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </clr-modal>
-</ng-container>
+<form *ngIf="form" clrForm [formGroup]="form">
+  <ng-container *ngIf="field">
+    <clr-modal [(clrModalOpen)]="isOpen">
+      <h3 class="modal-title">Field: {{ field.value.name }}</h3>
+      <div class="modal-body">
+        <table class="table table-compact table-noborder table-vertical">
+          <tbody>
+            <tr>
+              <th>TypeMeta</th>
+              <td>
+                {{ field.kubernetesObject.groupVersionKind() | apiVersion }}
+              </td>
+            </tr>
+            <tr>
+              <th>Object Path</th>
+              <td>[{{ field.value.path | objectPath }}]</td>
+            </tr>
+            <tr>
+              <th>Description</th>
+              <td>{{ description() }}</td>
+            </tr>
+            <tr>
+              <th>Supported Field Types</th>
+              <td>{{ type() }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button
+          class="btn btn-primary"
+          type="submit"
+          (click)="submit()"
+          [disabled]="form.invalid"
+        >
+          Submit
+        </button>
+        <button class="btn" type="button" (click)="resetForm()">
+          Reset
+        </button>
+      </div>
+    </clr-modal>
+  </ng-container>
+</form>
