@@ -1,6 +1,10 @@
 import * as YAMLParser from 'yaml-ast-parser';
+import * as YAML from 'yaml';
+
 import IRange = monaco.IRange;
 import IPosition = monaco.IPosition;
+import { CST } from 'yaml/index';
+import { apiVersion } from './group-version-kind';
 
 interface Positionable {
   startPosition: number;
@@ -19,7 +23,36 @@ export interface DocumentPosition {
   character: string;
 }
 
+export interface DocumentDescriptor {
+  apiVersion: string;
+  kind: string;
+  name: string;
+}
+
 const BreakException = {};
+
+export class YamlDocument2 {
+  private readonly documents: CST.Document[];
+
+  constructor(private readonly value: string) {
+    this.documents = YAML.parseCST(value);
+  }
+
+  docDescriptors(): DocumentDescriptor[] {
+    return this.documents.map<DocumentDescriptor>((doc) => {
+      const cur = this.value.substring(
+        doc.valueRange.start,
+        doc.valueRange.end
+      );
+      const obj = YAML.parse(cur);
+      return {
+        apiVersion: obj.apiVersion,
+        kind: obj.kind,
+        name: obj.metadata.name,
+      };
+    });
+  }
+}
 
 export class YamlDocument {
   readonly yamlNode: YAMLParser.YAMLNode;

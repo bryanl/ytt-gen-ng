@@ -17,7 +17,7 @@
   <div class="content-container">
     <div class="content-area">
       <div class="ytt-nav">
-        <app-sidebar></app-sidebar>
+        <app-sidebar [docDescriptors]="documentDescriptors"></app-sidebar>
       </div>
       <div class="ytt-content">
         <div class="ytt-editor">
@@ -25,6 +25,7 @@
             *ngIf="code.length > 0"
             [code]="code"
             (clientField)="fieldClicked($event)"
+            (docDescriptors)="docDescriptorsUpdated($event)"
           ></app-editor>
         </div>
         <div class="ytt-workbench">

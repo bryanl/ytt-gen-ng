@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { NgxMonacoEditorConfig } from 'ngx-monaco-editor';
-import { YamlDocument } from './yaml-document';
+import { YamlDocument, YamlDocument2 } from './yaml-document';
 import { SchemaService } from '../schema/schema.service';
 import { filter, take } from 'rxjs/operators';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
@@ -45,7 +45,10 @@ export class MonacoService {
   handleMargin(editor: IStandaloneCodeEditor) {
     return new Observable<Field>((observer) => {
       this.currentSchema().subscribe((schema) => {
+        const x = new YamlDocument2(editor.getValue());
+
         const doc = new YamlDocument(editor.getValue());
+
         const source = editor.getValue();
 
         editor.onMouseDown((e) => {
@@ -78,6 +81,9 @@ export class MonacoService {
           model: monaco.editor.ITextModel,
           position: monaco.Position
         ): monaco.languages.ProviderResult<monaco.languages.Hover> {
+          const x = new YamlDocument2(model.getValue());
+          console.log(x);
+
           const doc = new YamlDocument(model.getValue());
           const pos = doc.absPosition(position);
 

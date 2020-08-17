@@ -14,7 +14,11 @@ import {
   NgxEditorModel,
 } from 'ngx-monaco-editor';
 import { MonacoService } from '../core/services/monaco/monaco.service';
-import { Value } from '../core/services/monaco/yaml-document';
+import {
+  DocumentDescriptor,
+  Value,
+  YamlDocument2,
+} from '../core/services/monaco/yaml-document';
 import { KubernetesObject } from '../core/services/monaco/kubernetes-object';
 import IStandaloneCodeEditor = monaco.editor.IStandaloneCodeEditor;
 
@@ -44,6 +48,10 @@ export class YttEditorComponent implements OnChanges {
 
   @Output() clientField: EventEmitter<Field> = new EventEmitter<Field>();
 
+  @Output() docDescriptors: EventEmitter<
+    DocumentDescriptor[]
+  > = new EventEmitter<DocumentDescriptor[]>();
+
   model: NgxEditorModel = {
     value: 'foo: bar',
     language: 'yaml',
@@ -59,6 +67,12 @@ export class YttEditorComponent implements OnChanges {
 
   onInit(editor: IStandaloneCodeEditor) {
     const source = editor.getValue();
+
+    const doc = new YamlDocument2(source);
+    this.ngZone.run(() => {
+      this.docDescriptors.emit(doc.docDescriptors());
+    });
+
     const decorations = source
       .split('\n')
       .map<monaco.editor.IModelDeltaDecoration>((line, i) => {

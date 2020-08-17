@@ -2,7 +2,7 @@ import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { UploadModalComponent } from './upload-modal/upload-modal.component';
 import { UrlService } from './url.service';
 import { take } from 'rxjs/operators';
-import { Value } from './core/services/monaco/yaml-document';
+import { DocumentDescriptor } from './core/services/monaco/yaml-document';
 import { ValueModalComponent } from './value-modal/value-modal.component';
 import { Field } from './ytt-editor/ytt-editor.component';
 
@@ -16,6 +16,8 @@ export class AppComponent implements AfterViewInit {
   @ViewChild('valueModal') valueModal: ValueModalComponent;
 
   code = '';
+
+  documentDescriptors: DocumentDescriptor[];
 
   constructor(private urlService: UrlService) {}
 
@@ -37,5 +39,9 @@ export class AppComponent implements AfterViewInit {
 
   fieldClicked(field: Field) {
     this.valueModal.open(field);
+  }
+
+  docDescriptorsUpdated(documentDescriptors: DocumentDescriptor[]) {
+    this.documentDescriptors = [].concat(documentDescriptors);
   }
 }
