@@ -17,7 +17,10 @@
   <div class="content-container">
     <div class="content-area">
       <div class="ytt-nav">
-        <app-sidebar [docDescriptors]="documentDescriptors"></app-sidebar>
+        <app-sidebar
+          [docDescriptors]="documentDescriptors"
+          (currentDescriptor)="descriptorSelected($event)"
+        ></app-sidebar>
       </div>
       <div class="ytt-content">
         <div class="ytt-editor">

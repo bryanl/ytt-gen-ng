@@ -11,7 +11,9 @@
       {{ kind.name }}
       <clr-tree-node *ngFor="let name of kind.children" [clrExpanded]="true">
         <clr-icon shape="block"></clr-icon>
-        {{ name.name }}
+        <a href="javascript:" (click)="select(name.descriptor)">{{
+          name.name
+        }}</a>
       </clr-tree-node>
     </clr-tree-node>
   </clr-tree-node>

@@ -69,6 +69,7 @@ export class YttEditorComponent implements OnChanges {
     const source = editor.getValue();
 
     const doc = new YamlDocument2(source);
+    console.log(doc);
     this.ngZone.run(() => {
       this.docDescriptors.emit(doc.docDescriptors());
     });

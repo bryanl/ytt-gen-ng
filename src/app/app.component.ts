@@ -44,4 +44,8 @@ export class AppComponent implements AfterViewInit {
   docDescriptorsUpdated(documentDescriptors: DocumentDescriptor[]) {
     this.documentDescriptors = [].concat(documentDescriptors);
   }
+
+  descriptorSelected($event: DocumentDescriptor) {
+    console.log('selected descriptor', $event);
+  }
 }

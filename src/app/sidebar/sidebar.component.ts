@@ -1,9 +1,16 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+} from '@angular/core';
 import { DocumentDescriptor } from '../core/services/monaco/yaml-document';
 
 interface TreeNode {
   name: string;
   children: TreeNode[];
+  descriptor?: DocumentDescriptor;
 }
 
 @Component({
@@ -19,6 +26,10 @@ export class SidebarComponent {
     }
     this.nodes = this.genNodes(v);
   }
+
+  @Output() currentDescriptor: EventEmitter<
+    DocumentDescriptor
+  > = new EventEmitter<DocumentDescriptor>();
 
   nodes: TreeNode[] = [];
 
@@ -48,6 +59,7 @@ export class SidebarComponent {
       apiVersions[avIndex].children[kindIndex].children.push({
         name: desc.name,
         children: [],
+        descriptor: desc,
       });
 
       apiVersions[avIndex].children[kindIndex].children.sort(treeNodeSort);
@@ -56,6 +68,10 @@ export class SidebarComponent {
     });
 
     return apiVersions;
+  }
+
+  select(descriptor: DocumentDescriptor) {
+    this.currentDescriptor.emit(descriptor);
   }
 }
 
