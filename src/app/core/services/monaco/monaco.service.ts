@@ -12,6 +12,7 @@ import IStandaloneCodeEditor = monaco.editor.IStandaloneCodeEditor;
 import ITextModel = monaco.editor.ITextModel;
 import CodeLensList = monaco.languages.CodeLensList;
 import IDisposable = monaco.IDisposable;
+import * as YAML from 'yaml';
 
 @Injectable({
   providedIn: 'root',
@@ -46,20 +47,26 @@ export class MonacoService {
   handleMargin(editor: IStandaloneCodeEditor) {
     return new Observable<Field>((observer) => {
       this.currentSchema().subscribe((schema) => {
-        const x = new YamlDocument2(editor.getValue());
-
         const doc = new YamlDocument(editor.getValue());
 
-        const source = editor.getValue();
+        const resolveObject = (object: any, path: string[]): any => {
+          if (path.length === 0) {
+            return object;
+          }
+          const key = path.shift();
+          return resolveObject(object[key], path);
+        };
 
         editor.onMouseDown((e) => {
           switch (e.target.type) {
             case monaco.editor.MouseTargetType.GUTTER_GLYPH_MARGIN:
               const value = doc.lineValue(e.target.position.lineNumber);
+              const object = YAML.parse(editor.getValue());
 
               observer.next({
-                kubernetesObject: new KubernetesObject(source, schema),
+                kubernetesObject: new KubernetesObject(doc.source, schema),
                 value,
+                object: resolveObject(object, value.path),
               });
               break;
           }

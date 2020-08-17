@@ -24,6 +24,7 @@ import IStandaloneCodeEditor = monaco.editor.IStandaloneCodeEditor;
 export interface Field {
   kubernetesObject: KubernetesObject;
   value: Value;
+  object: any;
 }
 
 @Component({

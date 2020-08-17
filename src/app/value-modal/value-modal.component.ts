@@ -19,6 +19,8 @@ export class ValueModalComponent implements OnInit {
   ngOnInit(): void {}
 
   open(field: Field) {
+    console.log('field', field);
+
     this.field = field;
     this.isOpen = true;
 

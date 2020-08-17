@@ -14,7 +14,7 @@ export interface Value {
   keyRange: IRange;
   name: string;
   path: string[];
-  currentValue: YAMLParser.YAMLNode;
+  node: YAMLParser.YAMLNode;
 }
 
 export interface DocumentPosition {
@@ -70,8 +70,8 @@ export class YamlDocument2 {
 export class YamlDocument {
   readonly yamlNode: YAMLParser.YAMLNode;
 
-  constructor(private readonly value: string) {
-    this.yamlNode = YAMLParser.safeLoad(value);
+  constructor(public readonly source: string) {
+    this.yamlNode = YAMLParser.safeLoad(source);
   }
 
   absPosition(position: monaco.IPosition): number {
@@ -83,7 +83,7 @@ export class YamlDocument {
     let pos: number;
 
     try {
-      [...this.value].forEach((c, i) => {
+      [...this.source].forEach((c, i) => {
         if (i === 0) {
           return;
         } else if (c === '\n') {
@@ -117,7 +117,7 @@ export class YamlDocument {
   position(absPosition: number): DocumentPosition {
     if (absPosition < 0) {
       throw new Error(`absolute position ${absPosition} is negative`);
-    } else if (absPosition > this.value.length - 1) {
+    } else if (absPosition > this.source.length - 1) {
       throw new Error(
         `absolute position ${absPosition} is beyond the end of the document`
       );
@@ -130,7 +130,7 @@ export class YamlDocument {
       column: 0,
     };
     try {
-      [...this.value].forEach((c, i) => {
+      [...this.source].forEach((c, i) => {
         cursor.column++;
         if (c === '\n') {
           cursor.lineNumber++;
@@ -211,7 +211,7 @@ export class YamlDocument {
     return {
       path: [...path, key.value],
       name: key.value,
-      currentValue: value,
+      node: value,
       keyRange: {
         endColumn: end.position.column,
         endLineNumber: end.position.lineNumber,

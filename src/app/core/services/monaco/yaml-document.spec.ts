@@ -215,7 +215,7 @@ xdescribe('YamlDocument', () => {
         want: {
           name: 'foo',
           path: ['foo'],
-          currentValue: undefined,
+          node: undefined,
           keyRange: {
             endColumn: 4,
             endLineNumber: 1,
@@ -230,7 +230,7 @@ xdescribe('YamlDocument', () => {
         want: {
           name: 'bar',
           path: ['foo', 'bar'],
-          currentValue: undefined,
+          node: undefined,
           keyRange: {
             endColumn: 6,
             endLineNumber: 2,
@@ -245,7 +245,7 @@ xdescribe('YamlDocument', () => {
         want: {
           name: 'foo',
           path: ['foo', 'foo'],
-          currentValue: undefined,
+          node: undefined,
           keyRange: {
             endColumn: 8,
             endLineNumber: 3,
@@ -292,7 +292,7 @@ xdescribe('YamlDocument', () => {
         want: {
           name: 'foo',
           path: ['foo'],
-          currentValue: {
+          node: {
             startPosition: 0,
             endPosition: 1,
             kind: YAMLParser.Kind.MAP,
@@ -313,7 +313,7 @@ xdescribe('YamlDocument', () => {
         want: {
           name: 'bar',
           path: ['foo', 'bar'],
-          currentValue: undefined,
+          node: undefined,
           keyRange: {
             endColumn: 6,
             endLineNumber: 2,
