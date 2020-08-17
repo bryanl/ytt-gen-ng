@@ -11,6 +11,7 @@ import IStandaloneEditorConstructionOptions = monaco.editor.IStandaloneEditorCon
 import IStandaloneCodeEditor = monaco.editor.IStandaloneCodeEditor;
 import ITextModel = monaco.editor.ITextModel;
 import CodeLensList = monaco.languages.CodeLensList;
+import IDisposable = monaco.IDisposable;
 
 @Injectable({
   providedIn: 'root',
@@ -74,39 +75,56 @@ export class MonacoService {
     );
   }
 
-  registerYamlHoverProvider(editor: IStandaloneCodeEditor) {
+  setup(editor: IStandaloneCodeEditor): IDisposable {
+    const disposables: IDisposable[] = [];
+
+    const disposable: IDisposable = {
+      dispose() {
+        disposables.forEach((d) => d.dispose());
+      },
+    };
+
     this.currentSchema().subscribe((schema) => {
-      monaco.languages.registerHoverProvider('yaml', {
-        provideHover(
-          model: monaco.editor.ITextModel,
-          position: monaco.Position
-        ): monaco.languages.ProviderResult<monaco.languages.Hover> {
-          const x = new YamlDocument2(model.getValue());
-          console.log(x);
+      disposables.push(this.registerYamlHoverProvider(schema, editor));
+    });
 
-          const doc = new YamlDocument(model.getValue());
-          const pos = doc.absPosition(position);
+    return disposable;
+  }
 
-          const ko = new KubernetesObject(model.getValue(), schema);
+  registerYamlHoverProvider(
+    schema: Schema,
+    editor: IStandaloneCodeEditor
+  ): IDisposable {
+    return monaco.languages.registerHoverProvider('yaml', {
+      provideHover(
+        model: monaco.editor.ITextModel,
+        position: monaco.Position
+      ): monaco.languages.ProviderResult<monaco.languages.Hover> {
+        const x = new YamlDocument2(model.getValue());
+        console.log(x);
 
-          const value = doc.valueAt(pos);
+        const doc = new YamlDocument(model.getValue());
+        const pos = doc.absPosition(position);
 
-          if (value) {
-            return {
-              range: value.keyRange,
-              contents: [
-                // { value: `**${value.name}**` },
-                {
-                  isTrusted: true,
-                  value: ko.description(...value.path),
-                },
-              ],
-            };
-          }
+        const ko = new KubernetesObject(model.getValue(), schema);
 
-          return undefined;
-        },
-      });
+        const value = doc.valueAt(pos);
+
+        if (value) {
+          return {
+            range: value.keyRange,
+            contents: [
+              // { value: `**${value.name}**` },
+              {
+                isTrusted: true,
+                value: ko.description(...value.path),
+              },
+            ],
+          };
+        }
+
+        return undefined;
+      },
     });
   }
 

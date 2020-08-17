@@ -57,10 +57,16 @@ export class YttEditorComponent implements OnInit {
     language: 'yaml',
   };
 
+  private monacoServiceDisposable: monaco.IDisposable;
+
   constructor(private monacoService: MonacoService, private ngZone: NgZone) {}
 
   ngOnInit() {
     this.descriptor$.subscribe((descriptor) => {
+      if (this.monacoServiceDisposable) {
+        this.monacoServiceDisposable.dispose();
+      }
+
       if (
         this.currentDescriptor &&
         descriptor.id === this.currentDescriptor.id
@@ -97,7 +103,7 @@ export class YttEditorComponent implements OnInit {
       this.ngZone.run(() => this.clientField.emit(field));
     });
 
-    this.monacoService.registerYamlHoverProvider(editor);
+    this.monacoServiceDisposable = this.monacoService.setup(editor);
     // this.monacoService.createTestProvider(editor);
   }
 }
