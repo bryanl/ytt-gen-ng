@@ -1,10 +1,9 @@
 import * as YAMLParser from 'yaml-ast-parser';
+import { v4 as uuidv4 } from 'uuid';
 import * as YAML from 'yaml';
-
+import { CST } from 'yaml/index';
 import IRange = monaco.IRange;
 import IPosition = monaco.IPosition;
-import { CST } from 'yaml/index';
-import { apiVersion } from './group-version-kind';
 
 interface Positionable {
   startPosition: number;
@@ -24,9 +23,11 @@ export interface DocumentPosition {
 }
 
 export interface DocumentDescriptor {
+  id: string;
   apiVersion: string;
   kind: string;
   name: string;
+  value: string;
 }
 
 const BreakException = {};
@@ -34,23 +35,36 @@ const BreakException = {};
 export class YamlDocument2 {
   private readonly documents: CST.Document[];
 
-  constructor(private readonly value: string) {
-    this.documents = YAML.parseCST(value);
+  private selected: number;
+
+  constructor(private readonly source: string) {
+    this.documents = YAML.parseCST(source);
   }
 
   docDescriptors(): DocumentDescriptor[] {
     return this.documents.map<DocumentDescriptor>((doc) => {
-      const cur = this.value.substring(
+      const value = this.source.substring(
         doc.valueRange.start,
         doc.valueRange.end
       );
-      const obj = YAML.parse(cur);
+      const obj = YAML.parse(value);
       return {
+        id: uuidv4(),
         apiVersion: obj.apiVersion,
         kind: obj.kind,
         name: obj.metadata.name,
+        value,
       };
     });
+  }
+
+  select(index: number) {
+    this.selected = index;
+  }
+
+  current(): DocumentDescriptor {
+    const index = !this.selected ? 0 : this.selected;
+    return this.docDescriptors()[index];
   }
 }
 

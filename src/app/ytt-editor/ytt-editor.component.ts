@@ -4,6 +4,7 @@ import {
   Input,
   NgZone,
   OnChanges,
+  OnInit,
   Output,
   SimpleChanges,
   ViewChild,
@@ -21,6 +22,7 @@ import {
 } from '../core/services/monaco/yaml-document';
 import { KubernetesObject } from '../core/services/monaco/kubernetes-object';
 import IStandaloneCodeEditor = monaco.editor.IStandaloneCodeEditor;
+import { Subject } from 'rxjs';
 
 export interface Field {
   kubernetesObject: KubernetesObject;
@@ -41,16 +43,14 @@ export interface Field {
     },
   ],
 })
-export class YttEditorComponent implements OnChanges {
+export class YttEditorComponent implements OnInit {
   @ViewChild('editor') editor: EditorComponent;
 
-  @Input() code: string;
+  @Input() descriptor$: Subject<DocumentDescriptor>;
 
   @Output() clientField: EventEmitter<Field> = new EventEmitter<Field>();
 
-  @Output() docDescriptors: EventEmitter<
-    DocumentDescriptor[]
-  > = new EventEmitter<DocumentDescriptor[]>();
+  private currentDescriptor: DocumentDescriptor;
 
   model: NgxEditorModel = {
     value: 'foo: bar',
@@ -59,20 +59,24 @@ export class YttEditorComponent implements OnChanges {
 
   constructor(private monacoService: MonacoService, private ngZone: NgZone) {}
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes.code.currentValue) {
-      this.model.value = changes.code.currentValue;
-    }
+  ngOnInit() {
+    this.descriptor$.subscribe((descriptor) => {
+      if (
+        this.currentDescriptor &&
+        descriptor.id === this.currentDescriptor.id
+      ) {
+        return;
+      }
+      this.model = {
+        value: descriptor.value,
+        language: 'yaml',
+      };
+      this.currentDescriptor = descriptor;
+    });
   }
 
   onInit(editor: IStandaloneCodeEditor) {
     const source = editor.getValue();
-
-    const doc = new YamlDocument2(source);
-    console.log(doc);
-    this.ngZone.run(() => {
-      this.docDescriptors.emit(doc.docDescriptors());
-    });
 
     const decorations = source
       .split('\n')
@@ -94,6 +98,6 @@ export class YttEditorComponent implements OnChanges {
     });
 
     this.monacoService.registerYamlHoverProvider(editor);
-    this.monacoService.createTestProvider(editor);
+    // this.monacoService.createTestProvider(editor);
   }
 }

@@ -18,17 +18,16 @@
     <div class="content-area">
       <div class="ytt-nav">
         <app-sidebar
-          [docDescriptors]="documentDescriptors"
+          *ngIf="doc"
+          [docDescriptors$]="documentDescriptors$"
           (currentDescriptor)="descriptorSelected($event)"
         ></app-sidebar>
       </div>
       <div class="ytt-content">
         <div class="ytt-editor">
           <app-editor
-            *ngIf="code.length > 0"
-            [code]="code"
+            [descriptor$]="descriptor$"
             (clientField)="fieldClicked($event)"
-            (docDescriptors)="docDescriptorsUpdated($event)"
           ></app-editor>
         </div>
         <div class="ytt-workbench">

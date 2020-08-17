@@ -1,19 +1,19 @@
 <clr-tree>
   Documents
-  <clr-tree-node *ngFor="let apiVersion of nodes" [clrExpanded]="true">
+  <clr-tree-node *ngFor="let apiVersion of nodes" clrExpanded="true">
     <clr-icon shape="folder"></clr-icon>
     {{ apiVersion.name }}
-    <clr-tree-node
-      *ngFor="let kind of apiVersion.children"
-      [clrExpanded]="true"
-    >
+    <clr-tree-node *ngFor="let kind of apiVersion.children" clrExpanded="true">
       <clr-icon shape="folder"></clr-icon>
       {{ kind.name }}
-      <clr-tree-node *ngFor="let name of kind.children" [clrExpanded]="true">
-        <clr-icon shape="block"></clr-icon>
-        <a href="javascript:" (click)="select(name.descriptor)">{{
-          name.name
-        }}</a>
+      <clr-tree-node *ngFor="let name of kind.children" clrExpanded="true">
+        <span
+          class="clickable-node"
+          (click)="selectDescriptor(name.descriptor)"
+        >
+          <clr-icon shape="block"></clr-icon>
+          {{ name.name }}
+        </span>
       </clr-tree-node>
     </clr-tree-node>
   </clr-tree-node>

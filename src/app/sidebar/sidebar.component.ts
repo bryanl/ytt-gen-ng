@@ -3,9 +3,11 @@ import {
   Component,
   EventEmitter,
   Input,
+  OnInit,
   Output,
 } from '@angular/core';
 import { DocumentDescriptor } from '../core/services/monaco/yaml-document';
+import { Subject } from 'rxjs';
 
 interface TreeNode {
   name: string;
@@ -19,13 +21,8 @@ interface TreeNode {
   styleUrls: ['./sidebar.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SidebarComponent {
-  @Input() set docDescriptors(v: DocumentDescriptor[]) {
-    if (!v) {
-      return;
-    }
-    this.nodes = this.genNodes(v);
-  }
+export class SidebarComponent implements OnInit {
+  @Input() docDescriptors$: Subject<DocumentDescriptor[]>;
 
   @Output() currentDescriptor: EventEmitter<
     DocumentDescriptor
@@ -35,7 +32,14 @@ export class SidebarComponent {
 
   constructor() {}
 
+  ngOnInit() {
+    this.docDescriptors$.subscribe((descriptors) => {
+      this.nodes = this.genNodes(descriptors);
+    });
+  }
+
   genNodes(descriptors: DocumentDescriptor[]): TreeNode[] {
+    console.log('gen nodes');
     const apiVersions: TreeNode[] = [];
 
     descriptors.forEach((desc) => {
@@ -70,7 +74,7 @@ export class SidebarComponent {
     return apiVersions;
   }
 
-  select(descriptor: DocumentDescriptor) {
+  selectDescriptor(descriptor: DocumentDescriptor) {
     this.currentDescriptor.emit(descriptor);
   }
 }

@@ -2,17 +2,18 @@
   <clr-modal [(clrModalOpen)]="isOpen">
     <h3 class="modal-title">Upload YAML</h3>
     <div class="modal-body">
-      <clr-input-container>
-        <label for="url">URL:</label>
-        <input
+      <clr-textarea-container>
+        <label for="url">URL</label>
+        <textarea
           id="url"
-          clrInput
-          type="text"
+          clrTextarea
           placeholder="Source URL"
           formControlName="url"
-        />
+          rows="5"
+          cols="50"
+        ></textarea>
         <clr-control-error>URL is invalid</clr-control-error>
-      </clr-input-container>
+      </clr-textarea-container>
     </div>
     <div class="modal-footer">
       <button

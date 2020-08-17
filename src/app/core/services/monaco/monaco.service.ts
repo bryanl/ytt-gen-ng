@@ -120,7 +120,7 @@ export class MonacoService {
       ''
     );
 
-    monaco.languages.registerCodeLensProvider('yaml', {
+    const t = monaco.languages.registerCodeLensProvider('yaml', {
       provideCodeLenses(
         model: ITextModel,
         token: monaco.CancellationToken

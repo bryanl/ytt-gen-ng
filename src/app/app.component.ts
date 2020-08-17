@@ -2,9 +2,13 @@ import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { UploadModalComponent } from './upload-modal/upload-modal.component';
 import { UrlService } from './url.service';
 import { take } from 'rxjs/operators';
-import { DocumentDescriptor } from './core/services/monaco/yaml-document';
+import {
+  DocumentDescriptor,
+  YamlDocument2,
+} from './core/services/monaco/yaml-document';
 import { ValueModalComponent } from './value-modal/value-modal.component';
 import { Field } from './ytt-editor/ytt-editor.component';
+import { BehaviorSubject, Subject } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -15,9 +19,15 @@ export class AppComponent implements AfterViewInit {
   @ViewChild('uploadModal') uploadModal: UploadModalComponent;
   @ViewChild('valueModal') valueModal: ValueModalComponent;
 
-  code = '';
+  doc: YamlDocument2;
+
+  descriptor$: Subject<DocumentDescriptor> = new Subject<DocumentDescriptor>();
 
   documentDescriptors: DocumentDescriptor[];
+
+  documentDescriptors$: BehaviorSubject<
+    DocumentDescriptor[]
+  > = new BehaviorSubject<DocumentDescriptor[]>([]);
 
   constructor(private urlService: UrlService) {}
 
@@ -32,7 +42,9 @@ export class AppComponent implements AfterViewInit {
       .download(url)
       .pipe(take(1))
       .subscribe((code) => {
-        this.code = code;
+        this.doc = new YamlDocument2(code);
+        this.descriptor$.next(this.doc.current());
+        this.documentDescriptors$.next(this.doc.docDescriptors());
         this.uploadModal.close();
       });
   }
@@ -41,11 +53,7 @@ export class AppComponent implements AfterViewInit {
     this.valueModal.open(field);
   }
 
-  docDescriptorsUpdated(documentDescriptors: DocumentDescriptor[]) {
-    this.documentDescriptors = [].concat(documentDescriptors);
-  }
-
-  descriptorSelected($event: DocumentDescriptor) {
-    console.log('selected descriptor', $event);
+  descriptorSelected(descriptor: DocumentDescriptor) {
+    this.descriptor$.next(descriptor);
   }
 }
