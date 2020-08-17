@@ -1,4 +1,8 @@
 .clickable-node {
   cursor: pointer;
   pointer-events: auto !important;
+
+  &.selected {
+    font-weight: bold;
+  }
 }

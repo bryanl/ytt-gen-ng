@@ -29,6 +29,7 @@ export class SidebarComponent implements OnInit {
   > = new EventEmitter<DocumentDescriptor>();
 
   nodes: TreeNode[] = [];
+  selectedId: string;
 
   constructor() {}
 
@@ -70,10 +71,17 @@ export class SidebarComponent implements OnInit {
       apiVersions.sort(treeNodeSort);
     });
 
+    this.selectedId = apiVersions[0].children[0].children[0].descriptor.id;
+
     return apiVersions;
   }
 
+  isSelected(descriptor: DocumentDescriptor) {
+    return descriptor.id === this.selectedId;
+  }
+
   selectDescriptor(descriptor: DocumentDescriptor) {
+    this.selectedId = descriptor.id;
     this.currentDescriptor.emit(descriptor);
   }
 }
