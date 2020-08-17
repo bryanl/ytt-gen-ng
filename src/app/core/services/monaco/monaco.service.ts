@@ -100,9 +100,6 @@ export class MonacoService {
         model: monaco.editor.ITextModel,
         position: monaco.Position
       ): monaco.languages.ProviderResult<monaco.languages.Hover> {
-        const x = new YamlDocument2(model.getValue());
-        console.log(x);
-
         const doc = new YamlDocument(model.getValue());
         const pos = doc.absPosition(position);
 

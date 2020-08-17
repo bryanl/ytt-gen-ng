@@ -43,10 +43,9 @@ export class YamlDocument2 {
 
   docDescriptors(): DocumentDescriptor[] {
     return this.documents.map<DocumentDescriptor>((doc) => {
-      const value = this.source.substring(
-        doc.valueRange.start,
-        doc.valueRange.end
-      );
+      const value = this.source
+        .substring(doc.valueRange.start, doc.valueRange.end)
+        .trim();
       const obj = YAML.parse(value);
       return {
         id: uuidv4(),

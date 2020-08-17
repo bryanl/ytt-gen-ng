@@ -39,7 +39,6 @@ export class SidebarComponent implements OnInit {
   }
 
   genNodes(descriptors: DocumentDescriptor[]): TreeNode[] {
-    console.log('gen nodes');
     const apiVersions: TreeNode[] = [];
 
     descriptors.forEach((desc) => {

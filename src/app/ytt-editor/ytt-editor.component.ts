@@ -3,10 +3,8 @@ import {
   EventEmitter,
   Input,
   NgZone,
-  OnChanges,
   OnInit,
   Output,
-  SimpleChanges,
   ViewChild,
 } from '@angular/core';
 import {
@@ -18,11 +16,10 @@ import { MonacoService } from '../core/services/monaco/monaco.service';
 import {
   DocumentDescriptor,
   Value,
-  YamlDocument2,
 } from '../core/services/monaco/yaml-document';
 import { KubernetesObject } from '../core/services/monaco/kubernetes-object';
-import IStandaloneCodeEditor = monaco.editor.IStandaloneCodeEditor;
 import { Subject } from 'rxjs';
+import IStandaloneCodeEditor = monaco.editor.IStandaloneCodeEditor;
 
 export interface Field {
   kubernetesObject: KubernetesObject;
