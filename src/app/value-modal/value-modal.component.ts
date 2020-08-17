@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Field } from '../ytt-editor/ytt-editor.component';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import * as YAML from 'yaml';
 
 @Component({
   selector: 'app-value-modal',
@@ -32,7 +33,8 @@ export class ValueModalComponent implements OnInit {
         value: new FormControl(''),
       }),
       add: new FormGroup({
-        value: new FormControl('wtf', Validators.required),
+        value: new FormControl(field.value.name, Validators.required),
+        object: new FormControl(YAML.stringify(field.object)),
       }),
     });
   }
