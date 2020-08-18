@@ -1,18 +1,18 @@
 import { Injectable } from '@angular/core';
 import { NgxMonacoEditorConfig } from 'ngx-monaco-editor';
-import { YamlDocument, YamlDocument2 } from './yaml-document';
+import { YamlDocument } from './yaml-document';
 import { SchemaService } from '../schema/schema.service';
 import { filter, take } from 'rxjs/operators';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { Schema } from '../schema/schema';
 import { KubernetesObject } from './kubernetes-object';
 import { Field } from '../../../ytt-editor/ytt-editor.component';
+import * as YAML from 'yaml';
 import IStandaloneEditorConstructionOptions = monaco.editor.IStandaloneEditorConstructionOptions;
 import IStandaloneCodeEditor = monaco.editor.IStandaloneCodeEditor;
 import ITextModel = monaco.editor.ITextModel;
 import CodeLensList = monaco.languages.CodeLensList;
 import IDisposable = monaco.IDisposable;
-import * as YAML from 'yaml';
 
 @Injectable({
   providedIn: 'root',
@@ -66,7 +66,7 @@ export class MonacoService {
               observer.next({
                 kubernetesObject: new KubernetesObject(doc.source, schema),
                 value,
-                object: resolveObject(object, value.path),
+                object: resolveObject(object, [...value.path]),
               });
               break;
           }
@@ -121,7 +121,7 @@ export class MonacoService {
               // { value: `**${value.name}**` },
               {
                 isTrusted: true,
-                value: ko.description(...value.path),
+                value: ko.description(...[...value.path]),
               },
             ],
           };
