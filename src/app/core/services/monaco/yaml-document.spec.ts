@@ -8,7 +8,7 @@ import IPosition = monaco.IPosition;
 import * as YAMLParser from 'yaml-ast-parser';
 
 describe('YamlDocument2', () => {
-  fdescribe('docDescriptors', () => {
+  describe('docDescriptors', () => {
     it('does stuff', () => {
       const source = [
         'apiVersion: apps/v1',
@@ -26,14 +26,18 @@ describe('YamlDocument2', () => {
       const got = doc.docDescriptors();
       expect(got).toEqual([
         {
+          id: 'id',
           apiVersion: 'apps/v1',
           kind: 'Deployment',
           name: 'deployment',
+          value: 'value',
         },
         {
+          id: 'id',
           apiVersion: 'v1',
           kind: 'Service',
           name: 'service',
+          value: 'value',
         },
       ]);
     });

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Field } from '../ytt-editor/ytt-editor.component';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import * as YAML from 'yaml';
+import { ValuesService } from '../services/values/values.service';
 
 @Component({
   selector: 'app-value-modal',
@@ -13,7 +14,9 @@ export class ValueModalComponent implements OnInit {
 
   field: Field;
 
-  constructor() {}
+  fieldType: string[];
+
+  constructor(private valuesServices: ValuesService) {}
 
   form: FormGroup;
 
@@ -25,6 +28,8 @@ export class ValueModalComponent implements OnInit {
     this.field = field;
     this.isOpen = true;
 
+    this.fieldType = field.kubernetesObject.type(...field.value.path);
+
     this.form = new FormGroup({
       options: new FormGroup({
         action: new FormControl('add'),
@@ -33,8 +38,12 @@ export class ValueModalComponent implements OnInit {
         value: new FormControl(''),
       }),
       add: new FormGroup({
-        value: new FormControl(field.value.name, Validators.required),
-        object: new FormControl(YAML.stringify(field.object)),
+        value: new FormControl(field.value.name, [Validators.required]),
+        object: new FormControl(
+          YAML.stringify(field.object),
+          this.valuesServices.objectValidators(this.fieldType)
+        ),
+        fieldsTypes: new FormControl(JSON.stringify(this.fieldType)),
       }),
     });
   }
@@ -59,7 +68,21 @@ export class ValueModalComponent implements OnInit {
 
   submit() {
     if (this.form) {
-      console.log('setttng value', this.form.value);
+      console.log('setting value', this.form.value);
     }
+  }
+
+  objectErrors() {
+    const add = this.form.get('add');
+    if (add) {
+      const object = add.get('object');
+      if (object) {
+        const errors = object.errors || {};
+        const text = Object.values<string>(errors);
+        return text.join(' ');
+      }
+    }
+
+    return 'something went wrong';
   }
 }
