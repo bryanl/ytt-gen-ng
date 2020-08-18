@@ -2,12 +2,9 @@ import { Injectable } from '@angular/core';
 import { NgxMonacoEditorConfig } from 'ngx-monaco-editor';
 import { YamlDocument } from './yaml-document';
 import { SchemaService } from '../schema/schema.service';
-import { filter, take } from 'rxjs/operators';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { Schema } from '../schema/schema';
 import { KubernetesObject } from './kubernetes-object';
-import { Field } from '../../../ytt-editor/ytt-editor.component';
-import * as YAML from 'yaml';
+import { ExtractService } from '../extract/extract.service';
 import IStandaloneEditorConstructionOptions = monaco.editor.IStandaloneEditorConstructionOptions;
 import IStandaloneCodeEditor = monaco.editor.IStandaloneCodeEditor;
 import ITextModel = monaco.editor.ITextModel;
@@ -18,16 +15,10 @@ import IDisposable = monaco.IDisposable;
   providedIn: 'root',
 })
 export class MonacoService {
-  private schema$: Subject<Schema> = new BehaviorSubject<Schema>(undefined);
-
-  constructor(private schemaService: SchemaService) {
-    schemaService
-      .getSchema()
-      .pipe(take(1))
-      .subscribe((data) => {
-        this.schema$.next(data);
-      });
-  }
+  constructor(
+    private schemaService: SchemaService,
+    private extractService: ExtractService
+  ) {}
 
   config(): NgxMonacoEditorConfig {
     return {
@@ -44,44 +35,6 @@ export class MonacoService {
     };
   }
 
-  handleMargin(editor: IStandaloneCodeEditor) {
-    return new Observable<Field>((observer) => {
-      this.currentSchema().subscribe((schema) => {
-        const doc = new YamlDocument(editor.getValue());
-
-        const resolveObject = (object: any, path: string[]): any => {
-          if (path.length === 0) {
-            return object;
-          }
-          const key = path.shift();
-          return resolveObject(object[key], path);
-        };
-
-        editor.onMouseDown((e) => {
-          switch (e.target.type) {
-            case monaco.editor.MouseTargetType.GUTTER_GLYPH_MARGIN:
-              const value = doc.lineValue(e.target.position.lineNumber);
-              const object = YAML.parse(editor.getValue());
-
-              observer.next({
-                kubernetesObject: new KubernetesObject(doc.source, schema),
-                value,
-                object: resolveObject(object, [...value.path]),
-              });
-              break;
-          }
-        });
-      });
-    });
-  }
-
-  currentSchema(): Observable<Schema> {
-    return this.schema$.pipe(
-      filter((x) => x !== undefined),
-      take(1)
-    );
-  }
-
   setup(editor: IStandaloneCodeEditor): IDisposable {
     const disposables: IDisposable[] = [];
 
@@ -91,11 +44,15 @@ export class MonacoService {
       },
     };
 
-    this.currentSchema().subscribe((schema) => {
+    this.schemaService.current().subscribe((schema) => {
       disposables.push(this.registerYamlHoverProvider(schema, editor));
     });
 
     return disposable;
+  }
+
+  extract() {
+    return this.extractService;
   }
 
   registerYamlHoverProvider(

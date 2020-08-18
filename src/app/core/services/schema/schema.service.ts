@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { AsyncSubject, Observable } from 'rxjs';
 import { JsonSchemaService } from '../../../data/service/json-schema/json-schema.service';
 import { Schema } from './schema';
+import { filter, take } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -20,5 +21,12 @@ export class SchemaService {
 
   getSchema(): Observable<Schema> {
     return this.schema$.asObservable();
+  }
+
+  current(): Observable<Schema> {
+    return this.schema$.pipe(
+      filter((x) => x !== undefined),
+      take(1)
+    );
   }
 }

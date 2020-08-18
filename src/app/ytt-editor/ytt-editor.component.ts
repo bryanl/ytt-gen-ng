@@ -97,9 +97,12 @@ export class YttEditorComponent implements OnInit {
 
     editor.deltaDecorations([], decorations);
 
-    this.monacoService.handleMargin(editor).subscribe((field) => {
-      this.ngZone.run(() => this.clientField.emit(field));
-    });
+    this.monacoService
+      .extract()
+      .onKeySelected(editor)
+      .subscribe((field) => {
+        this.ngZone.run(() => this.clientField.emit(field));
+      });
 
     this.monacoServiceDisposable = this.monacoService.setup(editor);
     // this.monacoService.createTestProvider(editor);
