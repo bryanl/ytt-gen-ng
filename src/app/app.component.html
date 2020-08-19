@@ -6,6 +6,17 @@
         <span class="title">ytt-gen-ng</span>
       </a>
     </div>
+    <div class="header-actions">
+      <clr-dropdown>
+        <button class="nav-icon" clrDropdownTrigger aria-label="togging menu">
+          <clr-icon shape="cog"></clr-icon>
+          <clr-icon shape="caret down"></clr-icon>
+        </button>
+        <clr-dropdown-menu *clrIfOpen clrPosition="bottom-right">
+          <a (click)="uploadModal.open()" clrDropdownItem>Upload</a>
+        </clr-dropdown-menu>
+      </clr-dropdown>
+    </div>
   </header>
   <nav class="subnav">
     <ul class="nav">
@@ -18,7 +29,7 @@
     <div class="content-area">
       <div class="ytt-nav">
         <app-sidebar
-          *ngIf="doc"
+          *ngIf="showSidebar"
           [docDescriptors$]="documentDescriptors$"
           (currentDescriptor)="descriptorSelected($event)"
         ></app-sidebar>

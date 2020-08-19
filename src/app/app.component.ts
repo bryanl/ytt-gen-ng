@@ -9,6 +9,7 @@ import {
 import { ValueModalComponent } from './value-modal/value-modal.component';
 import { Field } from './ytt-editor/ytt-editor.component';
 import { BehaviorSubject, Subject } from 'rxjs';
+import { StorageService } from './data/service/storage/storage.service';
 
 @Component({
   selector: 'app-root',
@@ -19,7 +20,7 @@ export class AppComponent implements AfterViewInit {
   @ViewChild('uploadModal') uploadModal: UploadModalComponent;
   @ViewChild('valueModal') valueModal: ValueModalComponent;
 
-  doc: YamlDocument2;
+  showSidebar = false;
 
   descriptor$: Subject<DocumentDescriptor> = new Subject<DocumentDescriptor>();
 
@@ -29,11 +30,20 @@ export class AppComponent implements AfterViewInit {
     DocumentDescriptor[]
   > = new BehaviorSubject<DocumentDescriptor[]>([]);
 
-  constructor(private urlService: UrlService) {}
+  constructor(
+    private urlService: UrlService,
+    private storageService: StorageService
+  ) {}
 
   ngAfterViewInit() {
     setTimeout(() => {
-      this.uploadModal.open();
+      const source = this.storageService.getSource();
+      if (!source) {
+        this.uploadModal.open();
+        return;
+      }
+
+      this.loadSource(source);
     });
   }
 
@@ -41,12 +51,18 @@ export class AppComponent implements AfterViewInit {
     this.urlService
       .download(url)
       .pipe(take(1))
-      .subscribe((code) => {
-        this.doc = new YamlDocument2(code);
-        this.descriptor$.next(this.doc.current());
-        this.documentDescriptors$.next(this.doc.docDescriptors());
+      .subscribe((source) => {
+        this.storageService.setSource(source);
+        this.loadSource(source);
         this.uploadModal.close();
       });
+  }
+
+  loadSource(source: string) {
+    const doc = new YamlDocument2(source);
+    this.descriptor$.next(doc.current());
+    this.documentDescriptors$.next(doc.docDescriptors());
+    this.showSidebar = true;
   }
 
   fieldClicked(field: Field) {
