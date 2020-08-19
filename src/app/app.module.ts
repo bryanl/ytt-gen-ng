@@ -16,9 +16,10 @@ import { SidebarComponent } from './sidebar/sidebar.component';
 import { WorkbenchComponent } from './workbench/workbench.component';
 import { ApiVersionPipe } from './api-version.pipe';
 import { ObjectPathPipe } from './object-path.pipe';
+import { ValueViewerComponent } from './value-viewer/value-viewer.component';
 
 @NgModule({
-  declarations: [AppComponent, YttEditorComponent, UploadModalComponent, ValueModalComponent, SidebarComponent, WorkbenchComponent, ApiVersionPipe, ObjectPathPipe],
+  declarations: [AppComponent, YttEditorComponent, UploadModalComponent, ValueModalComponent, SidebarComponent, WorkbenchComponent, ApiVersionPipe, ObjectPathPipe, ValueViewerComponent],
   imports: [
     // angular
     BrowserAnimationsModule,

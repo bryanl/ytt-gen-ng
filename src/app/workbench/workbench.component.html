@@ -2,22 +2,7 @@
   <clr-tab>
     <button clrTabLink>Values</button>
     <clr-tab-content *clrIfActive>
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Raw</th>
-            <th>Type</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let value of values">
-            <td>{{ value.name }}</td>
-            <td>{{ value.raw }}</td>
-            <td>{{ value.fieldTypes | json }}</td>
-          </tr>
-        </tbody>
-      </table>
+      <app-value-viewer [values]="values"></app-value-viewer>
     </clr-tab-content>
   </clr-tab>
 
