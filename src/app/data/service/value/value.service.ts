@@ -31,6 +31,10 @@ export class ValueService {
     this.updateValues(currentValues);
   }
 
+  clearValues() {
+    this.updateValues([]);
+  }
+
   private updateValues(values: Value[]) {
     this.storageService.setValues(values);
     this.values$.next(this.storageService.getValues());

@@ -1,5 +1,6 @@
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   EventEmitter,
   Input,
@@ -31,11 +32,12 @@ export class SidebarComponent implements OnInit {
   nodes: TreeNode[] = [];
   selectedId: string;
 
-  constructor() {}
+  constructor(private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
     this.docDescriptors$.subscribe((descriptors) => {
       this.nodes = this.genNodes(descriptors);
+      this.cdr.markForCheck();
     });
   }
 
