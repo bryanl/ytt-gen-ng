@@ -4,6 +4,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import * as YAML from 'yaml';
 import { ValuesService } from '../services/values/values.service';
 import { Value } from '../data/schema/value';
+import { ValueService } from '../data/service/value/value.service';
 
 @Component({
   selector: 'app-value-modal',
@@ -11,15 +12,16 @@ import { Value } from '../data/schema/value';
   styleUrls: ['./value-modal.component.scss'],
 })
 export class ValueModalComponent implements OnInit {
-  @Output() addValue: EventEmitter<Value> = new EventEmitter<Value>();
-
   isOpen = false;
 
   field: Field;
 
   fieldType: string[];
 
-  constructor(private valuesServices: ValuesService) {}
+  constructor(
+    private valuesServices: ValuesService,
+    private valueService: ValueService
+  ) {}
 
   form: FormGroup;
 
@@ -74,8 +76,8 @@ export class ValueModalComponent implements OnInit {
       console.log('setting value', this.form.value);
       if (this.form.get('options').get('action').value === 'add') {
         const value = new Value(this.form.get('add').value);
-        console.log(value);
-        this.addValue.emit(value);
+        this.valueService.addValue(value);
+        this.close();
       }
     }
   }

@@ -3,7 +3,10 @@
   <clr-dg-column>Raw</clr-dg-column>
   <clr-dg-column>Field Types</clr-dg-column>
 
-  <clr-dg-row *ngFor="let value of values">
+  <clr-dg-row *ngFor="let value of values$ | async">
+    <clr-dg-action-overflow>
+      <button class="action-item" (click)="onDelete(value)">Delete</button>
+    </clr-dg-action-overflow>
     <clr-dg-cell>{{ value.name }}</clr-dg-cell>
     <clr-dg-cell>{{ value.raw }}</clr-dg-cell>
     <clr-dg-cell>{{ value.fieldTypes | json }}</clr-dg-cell>

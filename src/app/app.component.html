@@ -35,7 +35,7 @@
           ></app-editor>
         </div>
         <div class="ytt-workbench">
-          <app-workbench [values]="values$ | async"></app-workbench>
+          <app-workbench></app-workbench>
         </div>
       </div>
     </div>
@@ -44,4 +44,4 @@
 
 <app-upload-modal #uploadModal (url)="updateCode($event)"></app-upload-modal>
 
-<app-value-modal #valueModal (addValue)="addValue($event)"></app-value-modal>
+<app-value-modal #valueModal></app-value-modal>

@@ -20,9 +20,10 @@ export class StorageService {
     localStorage.setItem(Key.Source, source);
   }
 
-  addValue(value: Value) {
-    const currentValues = this.getValues().filter((v) => v.name !== value.name);
-    const data = JSON.stringify([...currentValues, value]);
+  setValues(values: Value[]) {
+    const data = JSON.stringify(
+      values.sort((a, b) => (a.name < b.name ? -1 : 1))
+    );
     localStorage.setItem(Key.Values, data);
   }
 
