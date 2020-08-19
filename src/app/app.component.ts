@@ -8,7 +8,6 @@ import { Field } from './ytt-editor/ytt-editor.component';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { StorageService } from './data/service/storage/storage.service';
 import { DocumentDescriptor } from './data/schema/document-descriptor';
-import { Value } from './data/schema/value';
 
 @Component({
   selector: 'app-root',
