@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import { AsyncSubject, Observable } from 'rxjs';
 import { JsonSchemaService } from '../../../data/service/json-schema/json-schema.service';
 import { Schema } from './schema';
@@ -11,11 +11,16 @@ export class SchemaService {
   private schema: Schema;
   private schema$: AsyncSubject<Schema> = new AsyncSubject<Schema>();
 
-  constructor(private jsonSchemaService: JsonSchemaService) {
-    this.jsonSchemaService.load().subscribe((data) => {
-      this.schema = new Schema(data);
-      this.schema$.next(this.schema);
-      this.schema$.complete();
+  constructor(
+    private jsonSchemaService: JsonSchemaService,
+    private ngZone: NgZone
+  ) {
+    this.ngZone.runOutsideAngular(() => {
+      this.jsonSchemaService.load().subscribe((data) => {
+        this.schema = new Schema(data);
+        this.schema$.next(this.schema);
+        this.schema$.complete();
+      });
     });
   }
 
