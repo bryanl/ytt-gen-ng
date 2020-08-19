@@ -29,6 +29,10 @@ export class SourceLinkService {
           sl.name === name
       );
   }
+
+  clear() {
+    this.storageService.setSourceLinks([]);
+  }
 }
 
 const groupVersionKindComparator = (

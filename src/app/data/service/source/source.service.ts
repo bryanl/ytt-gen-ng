@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { StorageService } from '../storage/storage.service';
 import { ValueService } from '../value/value.service';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { SourceLinkService } from '../source-link/source-link.service';
 
 @Injectable({
   providedIn: 'root',
@@ -13,7 +14,8 @@ export class SourceService {
 
   constructor(
     private storageService: StorageService,
-    private valueService: ValueService
+    private valueService: ValueService,
+    private sourceLinkService: SourceLinkService
   ) {
     this.source$.next(this.storageService.getSource());
   }
@@ -25,5 +27,6 @@ export class SourceService {
   set(source: string) {
     this.storageService.setSource(source);
     this.valueService.clearValues();
+    this.sourceLinkService.clear();
   }
 }

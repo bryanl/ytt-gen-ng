@@ -5,13 +5,13 @@ import { SchemaService } from '../schema/schema.service';
 import { Schema } from '../schema/schema';
 import { KubernetesObject } from '../../../data/schema/kubernetes-object';
 import { ExtractService } from '../extract/extract.service';
+import { SourceLinkService } from '../../../data/service/source-link/source-link.service';
+import { v4 as uuidv4 } from 'uuid';
 import IStandaloneEditorConstructionOptions = monaco.editor.IStandaloneEditorConstructionOptions;
 import IStandaloneCodeEditor = monaco.editor.IStandaloneCodeEditor;
 import ITextModel = monaco.editor.ITextModel;
 import CodeLensList = monaco.languages.CodeLensList;
 import IDisposable = monaco.IDisposable;
-import { SourceLinkService } from '../../../data/service/source-link/source-link.service';
-import { v4 as uuidv4 } from 'uuid';
 
 @Injectable({
   providedIn: 'root',
@@ -74,8 +74,8 @@ export class MonacoService {
     );
 
     const lenses = sourceLinks.map<monaco.languages.CodeLens>((sl) => {
-      const commandId = editor.addCommand(0, () => {
-        console.log('codelens clicked', sl);
+      const commandId = editor.addCommand(0, (...args: any): void => {
+        console.log('codelens clicked', sl, args);
       });
 
       return {
