@@ -43,7 +43,7 @@ export class AppComponent implements AfterViewInit {
         return;
       }
 
-      this.loadSource(source);
+      this.updateSource(source);
     });
   }
 
@@ -53,12 +53,11 @@ export class AppComponent implements AfterViewInit {
       .pipe(take(1))
       .subscribe((source) => {
         this.storageService.setSource(source);
-        this.loadSource(source);
+        this.updateSource(source);
         this.uploadModal.close();
       });
   }
-
-  loadSource(source: string) {
+  updateSource(source: string) {
     const doc = new YamlDocument2(source);
     this.descriptor$.next(doc.current());
     this.documentDescriptors$.next(doc.docDescriptors());
