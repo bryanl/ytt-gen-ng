@@ -1,5 +1,5 @@
 import * as YAML from 'yaml';
-import { ISchema } from '../schema/schema';
+import { ISchema } from '../../core/services/schema/schema';
 import {
   GroupVersion,
   GroupVersionKind,

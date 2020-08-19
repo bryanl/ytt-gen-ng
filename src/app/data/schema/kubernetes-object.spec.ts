@@ -1,5 +1,5 @@
 import { KubernetesObject } from './kubernetes-object';
-import { Schema } from '../schema/schema';
+import { Schema } from '../../core/services/schema/schema';
 import { IGroupVersionKind } from './group-version-kind';
 
 describe('KubernetesObject', () => {

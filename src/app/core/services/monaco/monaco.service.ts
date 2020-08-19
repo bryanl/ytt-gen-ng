@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { NgxMonacoEditorConfig } from 'ngx-monaco-editor';
-import { YamlDocument } from './yaml-document';
+import { YamlDocument } from '../../../data/schema/yaml-document';
 import { SchemaService } from '../schema/schema.service';
 import { Schema } from '../schema/schema';
-import { KubernetesObject } from './kubernetes-object';
+import { KubernetesObject } from '../../../data/schema/kubernetes-object';
 import { ExtractService } from '../extract/extract.service';
 import IStandaloneEditorConstructionOptions = monaco.editor.IStandaloneEditorConstructionOptions;
 import IStandaloneCodeEditor = monaco.editor.IStandaloneCodeEditor;

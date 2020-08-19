@@ -13,17 +13,15 @@ import {
   NgxEditorModel,
 } from 'ngx-monaco-editor';
 import { MonacoService } from '../core/services/monaco/monaco.service';
-import {
-  DocumentDescriptor,
-  Value,
-} from '../core/services/monaco/yaml-document';
-import { KubernetesObject } from '../core/services/monaco/kubernetes-object';
+import { KubernetesObject } from '../data/schema/kubernetes-object';
 import { Subject } from 'rxjs';
 import IStandaloneCodeEditor = monaco.editor.IStandaloneCodeEditor;
+import { ValueDescriptor } from '../data/schema/value-descriptor';
+import { DocumentDescriptor } from '../data/schema/document-descriptor';
 
 export interface Field {
   kubernetesObject: KubernetesObject;
-  value: Value;
+  value: ValueDescriptor;
   object: any;
 }
 

@@ -2,14 +2,12 @@ import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { UploadModalComponent } from './upload-modal/upload-modal.component';
 import { UrlService } from './url.service';
 import { take } from 'rxjs/operators';
-import {
-  DocumentDescriptor,
-  YamlDocument2,
-} from './core/services/monaco/yaml-document';
+import { YamlDocument2 } from './data/schema/yaml-document';
 import { ValueModalComponent } from './value-modal/value-modal.component';
 import { Field } from './ytt-editor/ytt-editor.component';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { StorageService } from './data/service/storage/storage.service';
+import { DocumentDescriptor } from './data/schema/document-descriptor';
 
 @Component({
   selector: 'app-root',

@@ -6,8 +6,8 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
-import { DocumentDescriptor } from '../core/services/monaco/yaml-document';
 import { Subject } from 'rxjs';
+import { DocumentDescriptor } from '../data/schema/document-descriptor';
 
 interface TreeNode {
   name: string;

@@ -1,11 +1,8 @@
-import {
-  DocumentPosition,
-  Value,
-  YamlDocument,
-  YamlDocument2,
-} from './yaml-document';
+import { YamlDocument, YamlDocument2 } from './yaml-document';
 import IPosition = monaco.IPosition;
 import * as YAMLParser from 'yaml-ast-parser';
+import { ValueDescriptor } from './value-descriptor';
+import { DocumentPosition } from './document-position';
 
 describe('YamlDocument2', () => {
   describe('docDescriptors', () => {
@@ -208,7 +205,7 @@ xdescribe('YamlDocument', () => {
         value: string;
         absPos: number;
       };
-      want?: Value;
+      want?: ValueDescriptor;
       wantErr?: boolean;
     }
 
@@ -285,7 +282,7 @@ xdescribe('YamlDocument', () => {
         value: string;
         line: number;
       };
-      want?: Value;
+      want?: ValueDescriptor;
       wantErr?: boolean;
     }
 

@@ -2,33 +2,10 @@ import * as YAMLParser from 'yaml-ast-parser';
 import { v4 as uuidv4 } from 'uuid';
 import * as YAML from 'yaml';
 import { CST } from 'yaml/index';
-import IRange = monaco.IRange;
-import IPosition = monaco.IPosition;
-
-interface Positionable {
-  startPosition: number;
-  endPosition: number;
-}
-
-export interface Value {
-  keyRange: IRange;
-  name: string;
-  path: string[];
-  node: YAMLParser.YAMLNode;
-}
-
-export interface DocumentPosition {
-  position: IPosition;
-  character: string;
-}
-
-export interface DocumentDescriptor {
-  id: string;
-  apiVersion: string;
-  kind: string;
-  name: string;
-  value: string;
-}
+import { ValueDescriptor } from './value-descriptor';
+import { DocumentDescriptor } from './document-descriptor';
+import { Positionable } from './positionable';
+import { DocumentPosition } from './document-position';
 
 const BreakException = {};
 
@@ -155,8 +132,11 @@ export class YamlDocument {
     };
   }
 
-  valueAt(absPos: number): Value {
-    const visitor = (doc: YAMLParser.YAMLNode, path: string[]): Value => {
+  valueAt(absPos: number): ValueDescriptor {
+    const visitor = (
+      doc: YAMLParser.YAMLNode,
+      path: string[]
+    ): ValueDescriptor => {
       switch (doc.kind) {
         case YAMLParser.Kind.MAP:
           const ym = doc as YAMLParser.YamlMap;
@@ -186,7 +166,7 @@ export class YamlDocument {
     return visitor(this.yamlNode, []);
   }
 
-  lineValue(line: number): Value {
+  lineValue(line: number): ValueDescriptor {
     let done = false;
     let curColumn = 1;
     let absPos: number;
@@ -204,7 +184,7 @@ export class YamlDocument {
     key: YAMLParser.YAMLScalar,
     value: YAMLParser.YAMLNode,
     path: string[]
-  ): Value {
+  ): ValueDescriptor {
     const start = this.position(key.startPosition);
     const end = this.position(key.endPosition);
 

@@ -3,8 +3,8 @@ import { SchemaService } from '../schema/schema.service';
 import IStandaloneCodeEditor = monaco.editor.IStandaloneCodeEditor;
 import { Observable } from 'rxjs';
 import { Field } from '../../../ytt-editor/ytt-editor.component';
-import { YamlDocument } from '../monaco/yaml-document';
-import { KubernetesObject } from '../monaco/kubernetes-object';
+import { YamlDocument } from '../../../data/schema/yaml-document';
+import { KubernetesObject } from '../../../data/schema/kubernetes-object';
 import * as YAML from 'yaml';
 
 @Injectable({
