@@ -45,25 +45,31 @@ export class SidebarComponent implements OnInit {
     const apiVersions: TreeNode[] = [];
 
     descriptors.forEach((desc) => {
-      let avIndex = apiVersions.findIndex((n) => n.name === desc.apiVersion);
+      const sourceLocator = desc.sourceLocator;
+      let avIndex = apiVersions.findIndex(
+        (n) => n.name === sourceLocator.apiVersion
+      );
       if (avIndex === -1) {
-        const t = apiVersions.push({ name: desc.apiVersion, children: [] });
+        const t = apiVersions.push({
+          name: sourceLocator.apiVersion,
+          children: [],
+        });
         avIndex = t - 1;
       }
 
       let kindIndex = apiVersions[avIndex].children.findIndex(
-        (n) => n.name === desc.kind
+        (n) => n.name === sourceLocator.kind
       );
       if (kindIndex === -1) {
         const t = apiVersions[avIndex].children.push({
-          name: desc.kind,
+          name: sourceLocator.kind,
           children: [],
         });
         kindIndex = t - 1;
       }
 
       apiVersions[avIndex].children[kindIndex].children.push({
-        name: desc.name,
+        name: sourceLocator.name,
         children: [],
         descriptor: desc,
       });

@@ -20,6 +20,10 @@ export class KubernetesObject {
     });
   }
 
+  name(): string {
+    return this.parsed.metadata.name;
+  }
+
   definitionId(): string {
     const gvk = this.groupVersionKind();
 

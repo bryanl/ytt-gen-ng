@@ -26,9 +26,11 @@ export class YamlDocument2 {
       const obj = YAML.parse(value);
       return {
         id: uuidv4(),
-        apiVersion: obj.apiVersion,
-        kind: obj.kind,
-        name: obj.metadata.name,
+        sourceLocator: {
+          apiVersion: obj.apiVersion,
+          kind: obj.kind,
+          name: obj.metadata.name,
+        },
         value,
       };
     });

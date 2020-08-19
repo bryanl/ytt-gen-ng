@@ -1,10 +1,12 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { Field } from '../ytt-editor/ytt-editor.component';
+import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import * as YAML from 'yaml';
 import { ValuesService } from '../services/values/values.service';
 import { Value } from '../data/schema/value';
 import { ValueService } from '../data/service/value/value.service';
+import { Field } from '../data/schema/field';
+import { SourceLinkService } from '../data/service/source-link/source-link.service';
+import { IGroupVersionKind } from '../data/schema/group-version-kind';
 
 @Component({
   selector: 'app-value-modal',
@@ -17,10 +19,12 @@ export class ValueModalComponent implements OnInit {
   field: Field;
 
   fieldType: string[];
+  private groupVersionKind: IGroupVersionKind;
 
   constructor(
     private valuesServices: ValuesService,
-    private valueService: ValueService
+    private valueService: ValueService,
+    private sourceLinkService: SourceLinkService
   ) {}
 
   form: FormGroup;
@@ -29,6 +33,7 @@ export class ValueModalComponent implements OnInit {
 
   open(field: Field) {
     console.log('field', field);
+    console.log('gvk', field.kubernetesObject.groupVersionKind());
 
     this.field = field;
     this.isOpen = true;
@@ -77,6 +82,13 @@ export class ValueModalComponent implements OnInit {
       if (this.form.get('options').get('action').value === 'add') {
         const value = new Value(this.form.get('add').value);
         this.valueService.addValue(value);
+        const ko = this.field.kubernetesObject;
+        this.sourceLinkService.add(
+          value.name,
+          ko.groupVersionKind(),
+          ko.name(),
+          this.field.value.keyRange
+        );
         this.close();
       }
     }

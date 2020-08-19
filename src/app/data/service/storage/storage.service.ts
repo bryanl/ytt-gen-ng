@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Value } from '../../schema/value';
+import { SourceLink } from '../../schema/source-link';
 
 enum Key {
   Source = 'source',
+  SourceLinks = 'source-links',
   Values = 'values',
 }
 
@@ -36,5 +38,19 @@ export class StorageService {
     return (JSON.parse(data) as Value[]).sort((a, b) =>
       a.name < b.name ? -1 : 1
     );
+  }
+
+  getSourceLinks(): SourceLink[] {
+    const data = localStorage.getItem(Key.SourceLinks);
+    if (!data) {
+      return [];
+    }
+
+    return JSON.parse(data) as SourceLink[];
+  }
+
+  setSourceLinks(sourceLinks: SourceLink[]) {
+    const data = JSON.stringify(sourceLinks);
+    localStorage.setItem(Key.SourceLinks, data);
   }
 }

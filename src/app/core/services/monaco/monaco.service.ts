@@ -10,6 +10,8 @@ import IStandaloneCodeEditor = monaco.editor.IStandaloneCodeEditor;
 import ITextModel = monaco.editor.ITextModel;
 import CodeLensList = monaco.languages.CodeLensList;
 import IDisposable = monaco.IDisposable;
+import { SourceLinkService } from '../../../data/service/source-link/source-link.service';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable({
   providedIn: 'root',
@@ -17,7 +19,8 @@ import IDisposable = monaco.IDisposable;
 export class MonacoService {
   constructor(
     private schemaService: SchemaService,
-    private extractService: ExtractService
+    private extractService: ExtractService,
+    private sourceLinkService: SourceLinkService
   ) {}
 
   config(): NgxMonacoEditorConfig {
@@ -45,7 +48,10 @@ export class MonacoService {
     };
 
     this.schemaService.current().subscribe((schema) => {
-      disposables.push(this.registerYamlHoverProvider(schema, editor));
+      disposables.push(
+        this.registerYamlHoverProvider(schema, editor),
+        this.configureSourceLink(editor, schema)
+      );
     });
 
     return disposable;
@@ -53,6 +59,48 @@ export class MonacoService {
 
   extract() {
     return this.extractService;
+  }
+
+  configureSourceLink(
+    editor: IStandaloneCodeEditor,
+    schema: Schema
+  ): IDisposable {
+    // set up code lens
+    const ko = new KubernetesObject(editor.getValue(), schema);
+    console.log('setting up code lens', ko.groupVersionKind(), ko.name());
+    const sourceLinks = this.sourceLinkService.get(
+      ko.groupVersionKind(),
+      ko.name()
+    );
+
+    const lenses = sourceLinks.map<monaco.languages.CodeLens>((sl) => {
+      const commandId = editor.addCommand(0, () => {
+        console.log('codelens clicked', sl);
+      });
+
+      return {
+        range: sl.range,
+        id: uuidv4(),
+        command: {
+          id: commandId,
+          title: `value:${sl.value}`,
+        },
+      };
+    });
+
+    return monaco.languages.registerCodeLensProvider('yaml', {
+      provideCodeLenses(
+        model: monaco.editor.ITextModel,
+        token: monaco.CancellationToken
+      ): monaco.languages.ProviderResult<monaco.languages.CodeLensList> {
+        return {
+          lenses,
+          dispose() {
+            console.log('disposing source link code lens provider');
+          },
+        };
+      },
+    });
   }
 
   registerYamlHoverProvider(

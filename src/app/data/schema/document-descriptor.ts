@@ -1,7 +1,7 @@
+import { SourceLocator } from './source-locator';
+
 export interface DocumentDescriptor {
   id: string;
-  apiVersion: string;
-  kind: string;
-  name: string;
+  sourceLocator: SourceLocator;
   value: string;
 }

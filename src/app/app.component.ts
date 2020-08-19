@@ -4,10 +4,10 @@ import { UrlService } from './url.service';
 import { take } from 'rxjs/operators';
 import { YamlDocument2 } from './data/schema/yaml-document';
 import { ValueModalComponent } from './value-modal/value-modal.component';
-import { Field } from './ytt-editor/ytt-editor.component';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { DocumentDescriptor } from './data/schema/document-descriptor';
 import { SourceService } from './data/service/source/source.service';
+import { Field } from './data/schema/field';
 
 @Component({
   selector: 'app-root',

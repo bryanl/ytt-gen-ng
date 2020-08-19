@@ -13,17 +13,11 @@ import {
   NgxEditorModel,
 } from 'ngx-monaco-editor';
 import { MonacoService } from '../core/services/monaco/monaco.service';
-import { KubernetesObject } from '../data/schema/kubernetes-object';
 import { Subject } from 'rxjs';
-import IStandaloneCodeEditor = monaco.editor.IStandaloneCodeEditor;
-import { ValueDescriptor } from '../data/schema/value-descriptor';
 import { DocumentDescriptor } from '../data/schema/document-descriptor';
-
-export interface Field {
-  kubernetesObject: KubernetesObject;
-  value: ValueDescriptor;
-  object: any;
-}
+import { Field } from '../data/schema/field';
+import IStandaloneCodeEditor = monaco.editor.IStandaloneCodeEditor;
+import { KubernetesObject } from '../data/schema/kubernetes-object';
 
 @Component({
   selector: 'app-editor',
@@ -103,6 +97,5 @@ export class YttEditorComponent implements OnInit {
       });
 
     this.monacoServiceDisposable = this.monacoService.setup(editor);
-    // this.monacoService.createTestProvider(editor);
   }
 }
