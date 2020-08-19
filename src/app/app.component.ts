@@ -8,6 +8,7 @@ import { Field } from './ytt-editor/ytt-editor.component';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { StorageService } from './data/service/storage/storage.service';
 import { DocumentDescriptor } from './data/schema/document-descriptor';
+import { Value } from './data/schema/value';
 
 @Component({
   selector: 'app-root',
@@ -27,6 +28,8 @@ export class AppComponent implements AfterViewInit {
   documentDescriptors$: BehaviorSubject<
     DocumentDescriptor[]
   > = new BehaviorSubject<DocumentDescriptor[]>([]);
+
+  values$: BehaviorSubject<Value[]> = new BehaviorSubject<Value[]>([]);
 
   constructor(
     private urlService: UrlService,
@@ -59,6 +62,7 @@ export class AppComponent implements AfterViewInit {
     const doc = new YamlDocument2(source);
     this.descriptor$.next(doc.current());
     this.documentDescriptors$.next(doc.docDescriptors());
+    this.values$.next(this.storageService.getValues());
     this.showSidebar = true;
   }
 
@@ -68,5 +72,11 @@ export class AppComponent implements AfterViewInit {
 
   descriptorSelected(descriptor: DocumentDescriptor) {
     this.descriptor$.next(descriptor);
+  }
+
+  addValue(value: Value) {
+    this.storageService.addValue(value);
+    this.valueModal.close();
+    this.values$.next(this.storageService.getValues());
   }
 }

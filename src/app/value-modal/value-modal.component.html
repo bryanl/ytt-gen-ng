@@ -30,6 +30,7 @@
           <label>Value action</label>
           <clr-radio-wrapper>
             <input
+              id="radioAdd"
               type="radio"
               clrRadio
               required
@@ -40,6 +41,7 @@
           </clr-radio-wrapper>
           <clr-radio-wrapper>
             <input
+              id="radioChoose"
               type="radio"
               clrRadio
               required
@@ -60,21 +62,23 @@
               <div class="card-block">
                 <div class="card-text">
                   <clr-input-container>
-                    <label>My name</label>
+                    <label for="addName">My name</label>
                     <input
+                      id="addName"
                       clrInput
                       placeholder="Fill me in, scotty!"
                       name="name"
-                      formControlName="value"
+                      formControlName="name"
                     />
                   </clr-input-container>
                   <clr-textarea-container>
-                    <label>Source</label>
+                    <label for="addRaw">Source</label>
                     <textarea
+                      id="addRaw"
                       clrTextarea
                       cols="80"
                       rows="5"
-                      formControlName="object"
+                      formControlName="raw"
                     ></textarea>
                     <clr-control-error>{{ objectErrors() }}</clr-control-error>
                   </clr-textarea-container>

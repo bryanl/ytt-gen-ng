@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Field } from '../ytt-editor/ytt-editor.component';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import * as YAML from 'yaml';
 import { ValuesService } from '../services/values/values.service';
+import { Value } from '../data/schema/value';
 
 @Component({
   selector: 'app-value-modal',
@@ -10,6 +11,8 @@ import { ValuesService } from '../services/values/values.service';
   styleUrls: ['./value-modal.component.scss'],
 })
 export class ValueModalComponent implements OnInit {
+  @Output() addValue: EventEmitter<Value> = new EventEmitter<Value>();
+
   isOpen = false;
 
   field: Field;
@@ -38,8 +41,8 @@ export class ValueModalComponent implements OnInit {
         value: new FormControl(''),
       }),
       add: new FormGroup({
-        value: new FormControl(field.value.name, [Validators.required]),
-        object: new FormControl(
+        name: new FormControl(field.value.name, [Validators.required]),
+        raw: new FormControl(
           YAML.stringify(field.object),
           this.valuesServices.objectValidators(this.fieldType)
         ),
@@ -69,6 +72,11 @@ export class ValueModalComponent implements OnInit {
   submit() {
     if (this.form) {
       console.log('setting value', this.form.value);
+      if (this.form.get('options').get('action').value === 'add') {
+        const value = new Value(this.form.get('add').value);
+        console.log(value);
+        this.addValue.emit(value);
+      }
     }
   }
 
