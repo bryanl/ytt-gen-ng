@@ -30,6 +30,7 @@
       <div class="ytt-content">
         <div class="ytt-editor">
           <app-editor
+            #yttEditor
             [descriptor$]="descriptor$"
             (clientField)="fieldClicked($event)"
           ></app-editor>

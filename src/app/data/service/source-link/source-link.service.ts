@@ -30,6 +30,21 @@ export class SourceLinkService {
       );
   }
 
+  /**
+   * Update source links.
+   * - Delete source links that point to default values that no longer exist.
+   */
+  update() {
+    const currentDefaultValues = this.storageService
+      .getDefaultValues()
+      .map<string>((dv) => dv.name);
+
+    const updated = this.storageService
+      .getSourceLinks()
+      .filter((sl) => currentDefaultValues.includes(sl.value));
+    this.storageService.setSourceLinks(updated);
+  }
+
   clear() {
     this.storageService.setSourceLinks([]);
   }

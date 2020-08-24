@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { ValueService } from './value.service';
+import { DefaultValueService } from './default-value.service';
 
 describe('ValueService', () => {
-  let service: ValueService;
+  let service: DefaultValueService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(ValueService);
+    service = TestBed.inject(DefaultValueService);
   });
 
   it('should be created', () => {

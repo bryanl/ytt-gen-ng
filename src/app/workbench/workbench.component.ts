@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Value } from '../data/schema/value';
+import { DefaultValue } from '../data/schema/default-value';
 
 @Component({
   selector: 'app-workbench',
@@ -7,7 +7,7 @@ import { Value } from '../data/schema/value';
   styleUrls: ['./workbench.component.scss'],
 })
 export class WorkbenchComponent implements OnInit {
-  @Input() values: Value[] = [];
+  @Input() values: DefaultValue[] = [];
 
   constructor() {}
 

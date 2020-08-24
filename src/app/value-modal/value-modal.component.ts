@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import * as YAML from 'yaml';
 import { ValuesService } from '../services/values/values.service';
-import { Value } from '../data/schema/value';
-import { ValueService } from '../data/service/value/value.service';
+import { DefaultValue } from '../data/schema/default-value';
+import { DefaultValueService } from '../data/service/value/default-value.service';
 import { Field } from '../data/schema/field';
 import { SourceLinkService } from '../data/service/source-link/source-link.service';
 import { IGroupVersionKind } from '../data/schema/group-version-kind';
@@ -15,15 +15,12 @@ import { IGroupVersionKind } from '../data/schema/group-version-kind';
 })
 export class ValueModalComponent implements OnInit {
   isOpen = false;
-
   field: Field;
-
   fieldType: string[];
-  private groupVersionKind: IGroupVersionKind;
 
   constructor(
     private valuesServices: ValuesService,
-    private valueService: ValueService,
+    private valueService: DefaultValueService,
     private sourceLinkService: SourceLinkService
   ) {}
 
@@ -53,6 +50,7 @@ export class ValueModalComponent implements OnInit {
           YAML.stringify(field.object),
           this.valuesServices.objectValidators(this.fieldType)
         ),
+        description: new FormControl(this.description()),
         fieldsTypes: new FormControl(JSON.stringify(this.fieldType)),
       }),
     });
@@ -80,8 +78,8 @@ export class ValueModalComponent implements OnInit {
     if (this.form) {
       console.log('setting value', this.form.value);
       if (this.form.get('options').get('action').value === 'add') {
-        const value = new Value(this.form.get('add').value);
-        this.valueService.addValue(value);
+        const value = new DefaultValue(this.form.get('add').value);
+        this.valueService.add(value);
         const ko = this.field.kubernetesObject;
         this.sourceLinkService.add(
           value.name,

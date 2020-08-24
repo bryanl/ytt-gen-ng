@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { StorageService } from '../storage/storage.service';
-import { ValueService } from '../value/value.service';
+import { DefaultValueService } from '../value/default-value.service';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { SourceLinkService } from '../source-link/source-link.service';
 
@@ -14,7 +14,7 @@ export class SourceService {
 
   constructor(
     private storageService: StorageService,
-    private valueService: ValueService,
+    private valueService: DefaultValueService,
     private sourceLinkService: SourceLinkService
   ) {
     this.source$.next(this.storageService.getSource());
@@ -26,7 +26,7 @@ export class SourceService {
 
   set(source: string) {
     this.storageService.setSource(source);
-    this.valueService.clearValues();
+    this.valueService.clear();
     this.sourceLinkService.clear();
   }
 }

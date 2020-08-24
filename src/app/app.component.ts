@@ -8,6 +8,8 @@ import { BehaviorSubject, Subject } from 'rxjs';
 import { DocumentDescriptor } from './data/schema/document-descriptor';
 import { SourceService } from './data/service/source/source.service';
 import { Field } from './data/schema/field';
+import { DefaultValueService } from './data/service/value/default-value.service';
+import { YttEditorComponent } from './ytt-editor/ytt-editor.component';
 
 @Component({
   selector: 'app-root',
@@ -17,6 +19,7 @@ import { Field } from './data/schema/field';
 export class AppComponent implements OnInit {
   @ViewChild('uploadModal') uploadModal: UploadModalComponent;
   @ViewChild('valueModal') valueModal: ValueModalComponent;
+  @ViewChild('yttEditor') yttEditor: YttEditorComponent;
 
   showSidebar = false;
 
@@ -30,18 +33,29 @@ export class AppComponent implements OnInit {
 
   constructor(
     private urlService: UrlService,
-    private sourceService: SourceService
+    private sourceService: SourceService,
+    private defaultValueService: DefaultValueService
   ) {}
 
   ngOnInit() {
-    this.sourceService.current().subscribe((source) => {
-      if (!source) {
-        this.uploadModal.open();
-        return;
-      }
+    this.sourceService
+      .current()
+      .subscribe((source) => this.handleSource(source));
 
-      this.updateSource(source);
+    this.defaultValueService.current().subscribe(() => {
+      if (this.yttEditor) {
+        this.yttEditor.reload();
+      }
     });
+  }
+
+  handleSource(source: string) {
+    if (!source) {
+      this.uploadModal.open();
+      return;
+    }
+
+    this.updateSource(source);
   }
 
   updateCode(url: string) {

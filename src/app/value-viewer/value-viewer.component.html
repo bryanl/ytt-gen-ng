@@ -1,7 +1,8 @@
 <clr-datagrid>
   <clr-dg-column>Name</clr-dg-column>
-  <clr-dg-column>Raw</clr-dg-column>
+  <clr-dg-column>Default Value</clr-dg-column>
   <clr-dg-column>Field Types</clr-dg-column>
+  <clr-dg-column class="description">Description</clr-dg-column>
 
   <clr-dg-row *ngFor="let value of values$ | async">
     <clr-dg-action-overflow>
@@ -10,5 +11,6 @@
     <clr-dg-cell>{{ value.name }}</clr-dg-cell>
     <clr-dg-cell>{{ value.raw }}</clr-dg-cell>
     <clr-dg-cell>{{ value.fieldTypes | json }}</clr-dg-cell>
+    <clr-dg-cell class="description">{{ value.description }}</clr-dg-cell>
   </clr-dg-row>
 </clr-datagrid>

@@ -17,7 +17,6 @@ import { Subject } from 'rxjs';
 import { DocumentDescriptor } from '../data/schema/document-descriptor';
 import { Field } from '../data/schema/field';
 import IStandaloneCodeEditor = monaco.editor.IStandaloneCodeEditor;
-import { KubernetesObject } from '../data/schema/kubernetes-object';
 
 @Component({
   selector: 'app-editor',
@@ -41,13 +40,12 @@ export class YttEditorComponent implements OnInit {
   @Output() clientField: EventEmitter<Field> = new EventEmitter<Field>();
 
   private currentDescriptor: DocumentDescriptor;
+  private monacoServiceDisposable: monaco.IDisposable;
 
   model: NgxEditorModel = {
-    value: 'foo: bar',
+    value: '',
     language: 'yaml',
   };
-
-  private monacoServiceDisposable: monaco.IDisposable;
 
   constructor(private monacoService: MonacoService, private ngZone: NgZone) {}
 
@@ -69,6 +67,13 @@ export class YttEditorComponent implements OnInit {
       };
       this.currentDescriptor = descriptor;
     });
+  }
+
+  reload() {
+    this.model = {
+      value: this.currentDescriptor.value,
+      language: 'yaml',
+    };
   }
 
   onInit(editor: IStandaloneCodeEditor) {

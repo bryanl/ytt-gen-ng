@@ -9,8 +9,6 @@ import { SourceLinkService } from '../../../data/service/source-link/source-link
 import { v4 as uuidv4 } from 'uuid';
 import IStandaloneEditorConstructionOptions = monaco.editor.IStandaloneEditorConstructionOptions;
 import IStandaloneCodeEditor = monaco.editor.IStandaloneCodeEditor;
-import ITextModel = monaco.editor.ITextModel;
-import CodeLensList = monaco.languages.CodeLensList;
 import IDisposable = monaco.IDisposable;
 
 @Injectable({
@@ -67,13 +65,12 @@ export class MonacoService {
   ): IDisposable {
     // set up code lens
     const ko = new KubernetesObject(editor.getValue(), schema);
-    console.log('setting up code lens', ko.groupVersionKind(), ko.name());
     const sourceLinks = this.sourceLinkService.get(
       ko.groupVersionKind(),
       ko.name()
     );
 
-    const lenses = sourceLinks.map<monaco.languages.CodeLens>((sl) => {
+    let lenses = sourceLinks.map<monaco.languages.CodeLens>((sl) => {
       const commandId = editor.addCommand(0, (...args: any): void => {
         console.log('codelens clicked', sl, args);
       });
@@ -96,9 +93,16 @@ export class MonacoService {
         return {
           lenses,
           dispose() {
-            console.log('disposing source link code lens provider');
+            lenses = [];
           },
         };
+      },
+      resolveCodeLens(
+        model: monaco.editor.ITextModel,
+        codeLens: monaco.languages.CodeLens,
+        token: monaco.CancellationToken
+      ): monaco.languages.ProviderResult<monaco.languages.CodeLens> {
+        return codeLens;
       },
     });
   }
@@ -133,46 +137,6 @@ export class MonacoService {
         }
 
         return undefined;
-      },
-    });
-  }
-
-  createTestProvider(editor: IStandaloneCodeEditor) {
-    const commandId = editor.addCommand(
-      0,
-      () => {
-        // services available in `ctx`
-        alert('my command is executing!');
-      },
-      ''
-    );
-
-    const t = monaco.languages.registerCodeLensProvider('yaml', {
-      provideCodeLenses(
-        model: ITextModel,
-        token: monaco.CancellationToken
-      ): monaco.languages.ProviderResult<CodeLensList> {
-        return {
-          lenses: [
-            {
-              range: {
-                startLineNumber: 1,
-                startColumn: 1,
-                endLineNumber: 2,
-                endColumn: 1,
-              },
-              id: 'First Line',
-              command: {
-                id: commandId,
-                title: 'First Line',
-              },
-            },
-          ],
-          dispose() {},
-        };
-      },
-      resolveCodeLens(model, codeLens, token) {
-        return codeLens;
       },
     });
   }

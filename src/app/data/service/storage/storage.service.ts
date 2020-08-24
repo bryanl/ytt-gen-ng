@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Value } from '../../schema/value';
+import { DefaultValue } from '../../schema/default-value';
 import { SourceLink } from '../../schema/source-link';
 
 enum Key {
@@ -22,20 +22,20 @@ export class StorageService {
     localStorage.setItem(Key.Source, source);
   }
 
-  setValues(values: Value[]) {
+  setDefaultValues(values: DefaultValue[]) {
     const data = JSON.stringify(
       values.sort((a, b) => (a.name < b.name ? -1 : 1))
     );
     localStorage.setItem(Key.Values, data);
   }
 
-  getValues(): Value[] {
+  getDefaultValues(): DefaultValue[] {
     const data = localStorage.getItem(Key.Values);
     if (!data) {
       return [];
     }
 
-    return (JSON.parse(data) as Value[]).sort((a, b) =>
+    return (JSON.parse(data) as DefaultValue[]).sort((a, b) =>
       a.name < b.name ? -1 : 1
     );
   }

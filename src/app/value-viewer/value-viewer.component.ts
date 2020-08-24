@@ -1,11 +1,6 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Input,
-  OnInit,
-} from '@angular/core';
-import { Value } from '../data/schema/value';
-import { ValueService } from '../data/service/value/value.service';
+import { Component, OnInit } from '@angular/core';
+import { DefaultValue } from '../data/schema/default-value';
+import { DefaultValueService } from '../data/service/value/default-value.service';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -14,15 +9,15 @@ import { Observable } from 'rxjs';
   styleUrls: ['./value-viewer.component.scss'],
 })
 export class ValueViewerComponent implements OnInit {
-  values$: Observable<Value[]>;
+  values$: Observable<DefaultValue[]>;
 
-  constructor(private valueService: ValueService) {}
+  constructor(private valueService: DefaultValueService) {}
 
   ngOnInit(): void {
-    this.values$ = this.valueService.values();
+    this.values$ = this.valueService.current();
   }
 
-  onDelete(value: Value) {
-    this.valueService.deleteValue(value.name);
+  onDelete(value: DefaultValue) {
+    this.valueService.delete(value.name);
   }
 }
