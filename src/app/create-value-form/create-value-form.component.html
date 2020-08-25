@@ -1,0 +1,45 @@
+<div class="clr-row" [formGroup]="formGroup">
+  <div class="clr-col-12">
+    <div class="card" formGroupName="add">
+      <div class="card-header">
+        Extract default value
+      </div>
+      <div class="card-block">
+        <div class="card-text">
+          <clr-input-container>
+            <label for="addName">My name</label>
+            <input
+              id="addName"
+              clrInput
+              placeholder="Fill me in, scotty!"
+              name="name"
+              formControlName="name"
+            />
+          </clr-input-container>
+          <clr-textarea-container>
+            <label for="description">Description</label>
+            <textarea
+              id="description"
+              clrTextarea
+              cols="80"
+              rows="5"
+              formControlName="description"
+            ></textarea>
+            <clr-control-error>{{ objectErrors() }}</clr-control-error>
+          </clr-textarea-container>
+          <clr-textarea-container>
+            <label for="addRaw">Source</label>
+            <textarea
+              id="addRaw"
+              clrTextarea
+              cols="80"
+              rows="5"
+              formControlName="raw"
+            ></textarea>
+            <clr-control-error>{{ objectErrors() }}</clr-control-error>
+          </clr-textarea-container>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

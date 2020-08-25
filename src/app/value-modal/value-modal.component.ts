@@ -74,6 +74,14 @@ export class ValueModalComponent implements OnInit {
     }
   }
 
+  currentAction() {
+    try {
+      return this.form.get('options').get('action').value;
+    } catch (e) {
+      return '';
+    }
+  }
+
   submit() {
     if (this.form) {
       console.log('setting value', this.form.value);

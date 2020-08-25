@@ -17,9 +17,10 @@ import { WorkbenchComponent } from './workbench/workbench.component';
 import { ApiVersionPipe } from './api-version.pipe';
 import { ObjectPathPipe } from './object-path.pipe';
 import { ValueViewerComponent } from './value-viewer/value-viewer.component';
+import { CreateValueFormComponent } from './create-value-form/create-value-form.component';
 
 @NgModule({
-  declarations: [AppComponent, YttEditorComponent, UploadModalComponent, ValueModalComponent, SidebarComponent, WorkbenchComponent, ApiVersionPipe, ObjectPathPipe, ValueViewerComponent],
+  declarations: [AppComponent, YttEditorComponent, UploadModalComponent, ValueModalComponent, SidebarComponent, WorkbenchComponent, ApiVersionPipe, ObjectPathPipe, ValueViewerComponent, CreateValueFormComponent],
   imports: [
     // angular
     BrowserAnimationsModule,
