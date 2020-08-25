@@ -1,27 +1,21 @@
 <form *ngIf="form" clrForm [formGroup]="form">
   <ng-container *ngIf="field">
     <clr-modal [(clrModalOpen)]="isOpen" clrModalSize="lg">
-      <h3 class="modal-title">Field: {{ field.value.name }}</h3>
+      <h3 class="modal-title">{{ modalTitle() }}</h3>
       <div class="modal-body">
         <table class="table table-compact table-noborder table-vertical">
           <tbody>
-            <tr>
-              <th>TypeMeta</th>
-              <td>
-                {{ field.kubernetesObject.groupVersionKind() | apiVersion }}
-              </td>
-            </tr>
             <tr>
               <th>Object Path</th>
               <td>[{{ field.value.path | objectPath }}]</td>
             </tr>
             <tr>
-              <th>Description</th>
-              <td>{{ description() }}</td>
-            </tr>
-            <tr>
               <th>Supported Field Types</th>
               <td>{{ type() }}</td>
+            </tr>
+            <tr>
+              <th>Description</th>
+              <td>{{ description() }}</td>
             </tr>
           </tbody>
         </table>
@@ -58,9 +52,7 @@
             <app-create-value-form [formGroup]="form"></app-create-value-form>
           </ng-container>
           <ng-container *ngSwitchCase="'select'">
-            <ng-container
-              *ngTemplateOutlet="chooseValue; context: { formGroup: form }"
-            ></ng-container>
+            <app-choose-value-form></app-choose-value-form>
           </ng-container>
           <div *ngSwitchDefault>{{ currentAction() }}</div>
         </ng-container>
@@ -81,7 +73,3 @@
     </clr-modal>
   </ng-container>
 </form>
-
-<ng-template #chooseValue let-formGroup="formGroup">
-  We are choosing a value
-</ng-template>

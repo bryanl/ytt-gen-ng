@@ -13,6 +13,7 @@ import { ValueViewerComponent } from './page/value-viewer/value-viewer.component
 import { CreateValueFormComponent } from './page/create-value-form/create-value-form.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MonacoEditorModule } from 'ngx-monaco-editor';
+import { ChooseValueFormComponent } from './page/choose-value-form/choose-value-form.component';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { MonacoEditorModule } from 'ngx-monaco-editor';
     ValueViewerComponent,
     WorkbenchComponent,
     YttEditorComponent,
+    ChooseValueFormComponent,
   ],
   imports: [
     CommonModule,

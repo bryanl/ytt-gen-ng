@@ -6,12 +6,13 @@ import { DefaultValue } from '../../../../data/schema/default-value';
 import { DefaultValueService } from '../../../../data/service/value/default-value.service';
 import { Field } from '../../../../data/schema/field';
 import { SourceLinkService } from '../../../../data/service/source-link/source-link.service';
-import { IGroupVersionKind } from '../../../../data/schema/group-version-kind';
+import { ApiVersionPipe } from '../../../shared/pipes/api-version/api-version.pipe';
 
 @Component({
   selector: 'app-value-modal',
   templateUrl: './value-modal.component.html',
   styleUrls: ['./value-modal.component.scss'],
+  providers: [ApiVersionPipe],
 })
 export class ValueModalComponent implements OnInit {
   isOpen = false;
@@ -21,7 +22,8 @@ export class ValueModalComponent implements OnInit {
   constructor(
     private valuesServices: ValuesService,
     private valueService: DefaultValueService,
-    private sourceLinkService: SourceLinkService
+    private sourceLinkService: SourceLinkService,
+    private apiVersion: ApiVersionPipe
   ) {}
 
   form: FormGroup;
@@ -112,5 +114,12 @@ export class ValueModalComponent implements OnInit {
     }
 
     return 'something went wrong';
+  }
+
+  modalTitle() {
+    const kubernetesObject = this.field.kubernetesObject;
+    const gvk = kubernetesObject.groupVersionKind();
+    const gvkDesc = this.apiVersion.transform(gvk);
+    return `${gvkDesc} | ${kubernetesObject.name()}`;
   }
 }
