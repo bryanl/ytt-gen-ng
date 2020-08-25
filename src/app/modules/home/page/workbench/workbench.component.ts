@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { DefaultValue } from '../data/schema/default-value';
+import { DefaultValue } from '../../../../data/schema/default-value';
 
 @Component({
   selector: 'app-workbench',

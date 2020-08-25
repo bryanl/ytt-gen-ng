@@ -8,7 +8,7 @@ import {
   Output,
 } from '@angular/core';
 import { Subject } from 'rxjs';
-import { DocumentDescriptor } from '../data/schema/document-descriptor';
+import { DocumentDescriptor } from '../../../../data/schema/document-descriptor';
 
 interface TreeNode {
   name: string;

@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import * as YAML from 'yaml';
-import { ValuesService } from '../services/values/values.service';
-import { DefaultValue } from '../data/schema/default-value';
-import { DefaultValueService } from '../data/service/value/default-value.service';
-import { Field } from '../data/schema/field';
-import { SourceLinkService } from '../data/service/source-link/source-link.service';
-import { IGroupVersionKind } from '../data/schema/group-version-kind';
+import { ValuesService } from '../../../../services/values/values.service';
+import { DefaultValue } from '../../../../data/schema/default-value';
+import { DefaultValueService } from '../../../../data/service/value/default-value.service';
+import { Field } from '../../../../data/schema/field';
+import { SourceLinkService } from '../../../../data/service/source-link/source-link.service';
+import { IGroupVersionKind } from '../../../../data/schema/group-version-kind';
 
 @Component({
   selector: 'app-value-modal',

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { DefaultValue } from '../data/schema/default-value';
-import { DefaultValueService } from '../data/service/value/default-value.service';
+import { DefaultValue } from '../../../../data/schema/default-value';
+import { DefaultValueService } from '../../../../data/service/value/default-value.service';
 import { Observable } from 'rxjs';
 
 @Component({

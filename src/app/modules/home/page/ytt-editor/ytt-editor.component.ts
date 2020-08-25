@@ -12,10 +12,10 @@ import {
   NGX_MONACO_EDITOR_CONFIG,
   NgxEditorModel,
 } from 'ngx-monaco-editor';
-import { MonacoService } from '../core/services/monaco/monaco.service';
+import { MonacoService } from '../../../../core/services/monaco/monaco.service';
 import { Subject } from 'rxjs';
-import { DocumentDescriptor } from '../data/schema/document-descriptor';
-import { Field } from '../data/schema/field';
+import { DocumentDescriptor } from '../../../../data/schema/document-descriptor';
+import { Field } from '../../../../data/schema/field';
 import IStandaloneCodeEditor = monaco.editor.IStandaloneCodeEditor;
 
 @Component({

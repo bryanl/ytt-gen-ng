@@ -2,7 +2,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 import {
   apiVersion,
   IGroupVersionKind,
-} from './data/schema/group-version-kind';
+} from '../../../../data/schema/group-version-kind';
 
 @Pipe({
   name: 'apiVersion',

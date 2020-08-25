@@ -3,34 +3,20 @@ import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { ClarityModule } from '@clr/angular';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MonacoEditorModule } from 'ngx-monaco-editor';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { YttEditorComponent } from './ytt-editor/ytt-editor.component';
-import { UploadModalComponent } from './upload-modal/upload-modal.component';
+import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { CoreModule } from './core/core.module';
-import { ValueModalComponent } from './value-modal/value-modal.component';
-import { SidebarComponent } from './sidebar/sidebar.component';
-import { WorkbenchComponent } from './workbench/workbench.component';
-import { ApiVersionPipe } from './api-version.pipe';
-import { ObjectPathPipe } from './object-path.pipe';
-import { ValueViewerComponent } from './value-viewer/value-viewer.component';
-import { CreateValueFormComponent } from './create-value-form/create-value-form.component';
 
 @NgModule({
-  declarations: [AppComponent, YttEditorComponent, UploadModalComponent, ValueModalComponent, SidebarComponent, WorkbenchComponent, ApiVersionPipe, ObjectPathPipe, ValueViewerComponent, CreateValueFormComponent],
+  declarations: [AppComponent],
   imports: [
     // angular
     BrowserAnimationsModule,
     BrowserModule,
     FormsModule,
     HttpClientModule,
-    ReactiveFormsModule,
-
-    // clarity
-    ClarityModule,
 
     // monaco
     MonacoEditorModule.forRoot(),
