@@ -19,17 +19,14 @@ export class CreateValueFormComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  objectErrors() {
-    const add = this.formGroup.get('add');
-    if (add) {
-      const object = add.get('object');
-      if (object) {
-        const errors = object.errors || {};
-        const text = Object.values<string>(errors);
-        return text.join(' ');
-      }
+  sourceErrors() {
+    const object = this.formGroup.get(['add', 'raw']);
+    if (object) {
+      const errors = object.errors || {};
+      const text = Object.values<string>(errors);
+      return text.join(' ');
     }
 
-    return 'something went wrong';
+    return 'unable to find value';
   }
 }

@@ -25,7 +25,6 @@
               rows="5"
               formControlName="description"
             ></textarea>
-            <clr-control-error>{{ objectErrors() }}</clr-control-error>
           </clr-textarea-container>
           <clr-textarea-container>
             <label for="addRaw">Source</label>
@@ -36,7 +35,7 @@
               rows="5"
               formControlName="raw"
             ></textarea>
-            <clr-control-error>{{ objectErrors() }}</clr-control-error>
+            <clr-control-error>{{ sourceErrors() }}</clr-control-error>
           </clr-textarea-container>
         </div>
       </div>

@@ -119,20 +119,6 @@ export class ValueModalComponent implements OnInit {
     }
   }
 
-  objectErrors() {
-    const add = this.form.get('add');
-    if (add) {
-      const object = add.get('object');
-      if (object) {
-        const errors = object.errors || {};
-        const text = Object.values<string>(errors);
-        return text.join(' ');
-      }
-    }
-
-    return 'something went wrong';
-  }
-
   modalTitle() {
     const kubernetesObject = this.field.kubernetesObject;
     const gvk = kubernetesObject.groupVersionKind();
