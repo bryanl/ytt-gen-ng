@@ -39,9 +39,26 @@ export class DefaultValueService {
   }
 
   /**
+   * Get a default value by name
+   *
+   * @param valueName is the name of the value.
+   */
+  get(valueName: string): DefaultValue {
+    const value = this.storageService
+      .getDefaultValues()
+      .find((v) => v.name === valueName);
+
+    if (!value) {
+      throw new Error(`default value ${valueName} does not exist`);
+    }
+
+    return value;
+  }
+
+  /**
    * Deletes a default value by name
    *
-   * @param name is the name of the default value
+   * @param name is the name of the default value.
    */
   delete(name: string) {
     const currentValues = this.storageService

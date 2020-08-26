@@ -44,7 +44,7 @@ export class ValueModalComponent implements OnInit {
         action: new FormControl('add'),
       }),
       choose: new FormGroup({
-        value: new FormControl(''),
+        selected: new FormControl('', [Validators.required]),
       }),
       add: new FormGroup({
         name: new FormControl(field.value.name, [Validators.required]),
@@ -87,9 +87,26 @@ export class ValueModalComponent implements OnInit {
   submit() {
     if (this.form) {
       console.log('setting value', this.form.value);
-      if (this.form.get('options').get('action').value === 'add') {
-        const value = new DefaultValue(this.form.get('add').value);
-        this.valueService.add(value);
+
+      const formAction = this.formAction();
+
+      if (formAction) {
+        let value: DefaultValue;
+
+        switch (formAction) {
+          case 'add':
+            value = new DefaultValue(this.form.get('add').value);
+            this.valueService.add(value);
+            break;
+          case 'select':
+            value = this.valueService.get(
+              this.form.get(['choose', 'selected']).value
+            );
+            break;
+          default:
+            throw new Error(`unknown form action ${formAction}`);
+        }
+
         const ko = this.field.kubernetesObject;
         this.sourceLinkService.add(
           value.name,
@@ -121,5 +138,27 @@ export class ValueModalComponent implements OnInit {
     const gvk = kubernetesObject.groupVersionKind();
     const gvkDesc = this.apiVersion.transform(gvk);
     return `${gvkDesc} | ${kubernetesObject.name()}`;
+  }
+
+  isValid() {
+    switch (this.formAction()) {
+      case 'add':
+        return this.form.get('add').valid;
+      case 'select':
+        return this.form.get('choose').valid;
+      default:
+        return false;
+    }
+  }
+
+  private formAction(): string | undefined {
+    if (this.form) {
+      const cur = this.form.get('options').get('action').value;
+      if (cur) {
+        return cur;
+      }
+    }
+
+    return undefined;
   }
 }

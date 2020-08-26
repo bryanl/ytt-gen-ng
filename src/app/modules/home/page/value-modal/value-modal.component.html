@@ -52,7 +52,10 @@
             <app-create-value-form [formGroup]="form"></app-create-value-form>
           </ng-container>
           <ng-container *ngSwitchCase="'select'">
-            <app-choose-value-form></app-choose-value-form>
+            <app-choose-value-form
+              [formGroup]="form"
+              [fieldType]="this.fieldType"
+            ></app-choose-value-form>
           </ng-container>
           <div *ngSwitchDefault>{{ currentAction() }}</div>
         </ng-container>
@@ -62,7 +65,7 @@
           class="btn btn-primary"
           type="submit"
           (click)="submit()"
-          [disabled]="form.invalid"
+          [disabled]="!isValid()"
         >
           Submit
         </button>

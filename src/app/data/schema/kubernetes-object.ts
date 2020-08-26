@@ -41,6 +41,9 @@ export class KubernetesObject {
   }
 
   private groupVersion(): GroupVersion {
+    if (!this.parsed.apiVersion) {
+      return undefined;
+    }
     const apiVersion = this.parsed.apiVersion as string;
     const parts = apiVersion.split('/');
     if (parts.length === 1) {

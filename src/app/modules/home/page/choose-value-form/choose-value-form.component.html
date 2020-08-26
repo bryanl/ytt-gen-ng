@@ -1,1 +1,17 @@
-We are choosing a value
+<clr-datagrid
+  [clrDgSingleSelected]="selected"
+  (clrDgSingleSelectedChange)="selectionChanged($event)"
+>
+  <clr-dg-column>Name</clr-dg-column>
+  <clr-dg-column>Value</clr-dg-column>
+  <clr-dg-column>Description</clr-dg-column>
+
+  <clr-dg-row
+    *clrDgItems="let value of matchingValues$ | async"
+    [clrDgItem]="value"
+  >
+    <clr-dg-cell>{{ value.name }}</clr-dg-cell>
+    <clr-dg-cell>{{ value.raw }}</clr-dg-cell>
+    <clr-dg-cell>{{ value.description }}</clr-dg-cell>
+  </clr-dg-row>
+</clr-datagrid>
