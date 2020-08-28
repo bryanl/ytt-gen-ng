@@ -1,32 +1,33 @@
 <clr-tree>
   <clr-tree-node
-    *ngFor="let rootNode of treeNodes"
+    *clrRecursiveFor="let node of treeNodes; getChildren: getChildren"
+    [ngClass]="node.classNames"
     clrExpanded="true"
-    [ngClass]="rootNode.classNames"
   >
-    {{ rootNode.name }}
-    <clr-tree-node
-      *ngFor="let gvkNode of rootNode.children"
-      clrExpanded="true"
-      [ngClass]="gvkNode.classNames"
-    >
-      <clr-icon [attr.shape]="gvkNode.icon" class="is-solid"></clr-icon>
-      {{ gvkNode.name }}
-      <clr-tree-node
-        *ngFor="let nameNode of gvkNode.children"
-        clrExpanded="true"
-        [ngClass]="nameNode.classNames"
+    <ng-container
+      *ngIf="node.isSelected; then clickable; else expandable"
+    ></ng-container>
+    <ng-template #clickable>
+      <span
+        class="clickable-node"
+        [class.selected]="node.isSelected(node.descriptor)"
+        (click)="node.click(node.descriptor)"
       >
-        <span
-          *ngIf="nameNode.isSelected"
-          class="clickable-node"
-          [class.selected]="nameNode.isSelected(nameNode.descriptor)"
-          (click)="nameNode.click(nameNode.descriptor)"
-        >
-          <clr-icon [attr.shape]="nameNode.icon" class="is-solid"></clr-icon>
-          {{ nameNode.name }}
-        </span>
-      </clr-tree-node>
-    </clr-tree-node>
+        <clr-icon
+          [attr.shape]="node.icon"
+          class="is-solid"
+          *ngIf="node.icon"
+        ></clr-icon>
+        {{ node.name }}
+      </span>
+    </ng-template>
+    <ng-template #expandable>
+      <clr-icon
+        [attr.shape]="node.icon"
+        class="is-solid"
+        *ngIf="node.icon"
+      ></clr-icon>
+      {{ node.name }}
+    </ng-template>
   </clr-tree-node>
 </clr-tree>

@@ -106,6 +106,8 @@ export class SidebarComponent implements OnInit {
     return [documents, generated];
   }
 
+  getChildren = (node: TreeNode) => node.children;
+
   isSelected(descriptor: DocumentDescriptor): boolean {
     return descriptor.id === this.selectedId;
   }
