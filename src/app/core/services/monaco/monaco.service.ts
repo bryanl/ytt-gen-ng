@@ -72,7 +72,7 @@ export class MonacoService {
 
     let lenses = sourceLinks.map<monaco.languages.CodeLens>((sl) => {
       const commandId = editor.addCommand(0, (...args: any): void => {
-        console.log('codelens clicked', sl, args);
+        console.log('codelens clicked', args);
       });
 
       return {
@@ -81,6 +81,7 @@ export class MonacoService {
         command: {
           id: commandId,
           title: `value:${sl.value}`,
+          arguments: [{ sl }],
         },
       };
     });
