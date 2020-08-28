@@ -17,6 +17,8 @@ interface TreeNode {
   descriptor?: DocumentDescriptor;
   icon?: string;
   classNames: string[];
+  isSelected?(descriptor: DocumentDescriptor): boolean;
+  click?(descriptor: DocumentDescriptor);
 }
 
 @Component({
@@ -44,8 +46,9 @@ export class SidebarComponent implements OnInit {
     });
   }
 
-  genTreeNodes(descriptors: DocumentDescriptor[]): TreeNode[] {
+  genDocuments(descriptors: DocumentDescriptor[]): TreeNode[] {
     const groupVersionKinds: TreeNode[] = [];
+    const self = this;
 
     descriptors.forEach((desc, i) => {
       const sourceLocator = desc.sourceLocator;
@@ -68,6 +71,12 @@ export class SidebarComponent implements OnInit {
         descriptor: desc,
         icon: 'block',
         classNames: [],
+        // isSelected: self.isSelected,
+        // click: self.selectDescriptor,
+        isSelected: (descriptor: DocumentDescriptor): boolean =>
+          this.isSelected(descriptor),
+        click: (descriptor: DocumentDescriptor) =>
+          this.selectDescriptor(descriptor),
       });
 
       groupVersionKinds[gvkIndex].children.sort(treeNodeSort);
@@ -78,16 +87,26 @@ export class SidebarComponent implements OnInit {
       }
     });
 
+    return groupVersionKinds;
+  }
+
+  genTreeNodes(descriptors: DocumentDescriptor[]): TreeNode[] {
     const documents: TreeNode = {
       name: 'Documents',
-      children: groupVersionKinds,
+      children: this.genDocuments(descriptors),
       classNames: ['section'],
     };
 
-    return [documents];
+    const generated: TreeNode = {
+      name: 'Generated',
+      children: [{ name: 'test', children: [], classNames: [] }],
+      classNames: ['section'],
+    };
+
+    return [documents, generated];
   }
 
-  isSelected(descriptor: DocumentDescriptor) {
+  isSelected(descriptor: DocumentDescriptor): boolean {
     return descriptor.id === this.selectedId;
   }
 
