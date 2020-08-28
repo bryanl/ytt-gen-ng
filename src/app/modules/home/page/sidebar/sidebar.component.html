@@ -6,7 +6,7 @@
   >
     {{ rootNode.name }}
     <clr-tree-node *ngFor="let gvkNode of rootNode.children" clrExpanded="true">
-      <clr-icon [attr.shape]="gvkNode.icon"></clr-icon>
+      <clr-icon [attr.shape]="gvkNode.icon" class="is-solid"></clr-icon>
       {{ gvkNode.name }}
       <clr-tree-node
         *ngFor="let nameNode of gvkNode.children"
@@ -17,7 +17,7 @@
           [class.selected]="isSelected(nameNode.descriptor)"
           (click)="selectDescriptor(nameNode.descriptor)"
         >
-          <clr-icon [attr.shape]="nameNode.icon"></clr-icon>
+          <clr-icon [attr.shape]="nameNode.icon" class="is-solid"></clr-icon>
           {{ nameNode.name }}
         </span>
       </clr-tree-node>
