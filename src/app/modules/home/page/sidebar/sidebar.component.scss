@@ -6,3 +6,25 @@
     font-weight: bold;
   }
 }
+
+:host ::ng-deep {
+  .section {
+    > .clr-tree-node-content-container {
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+  }
+
+  .clr-tree-node-content-container {
+    line-height: normal;
+    font-size: 12px;
+  }
+
+  .clr-treenode-content {
+    line-height: normal;
+  }
+  .clr-treenode-caret {
+    height: 1rem;
+    width: 1rem;
+  }
+}

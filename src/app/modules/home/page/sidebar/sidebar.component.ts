@@ -9,11 +9,14 @@ import {
 } from '@angular/core';
 import { Subject } from 'rxjs';
 import { DocumentDescriptor } from '../../../../data/schema/document-descriptor';
+import { group } from '@angular/animations';
 
 interface TreeNode {
   name: string;
   children: TreeNode[];
   descriptor?: DocumentDescriptor;
+  icon?: string;
+  classNames: string[];
 }
 
 @Component({
@@ -29,59 +32,59 @@ export class SidebarComponent implements OnInit {
     DocumentDescriptor
   > = new EventEmitter<DocumentDescriptor>();
 
-  nodes: TreeNode[] = [];
+  treeNodes: TreeNode[] = [];
   selectedId: string;
 
   constructor(private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
     this.docDescriptors$.subscribe((descriptors) => {
-      this.nodes = this.genNodes(descriptors);
+      this.treeNodes = this.genTreeNodes(descriptors);
       this.cdr.markForCheck();
     });
   }
 
-  genNodes(descriptors: DocumentDescriptor[]): TreeNode[] {
-    const apiVersions: TreeNode[] = [];
+  genTreeNodes(descriptors: DocumentDescriptor[]): TreeNode[] {
+    const groupVersionKinds: TreeNode[] = [];
 
-    descriptors.forEach((desc) => {
+    descriptors.forEach((desc, i) => {
       const sourceLocator = desc.sourceLocator;
-      let avIndex = apiVersions.findIndex(
-        (n) => n.name === sourceLocator.apiVersion
-      );
-      if (avIndex === -1) {
-        const t = apiVersions.push({
-          name: sourceLocator.apiVersion,
+      const gvk = `${sourceLocator.kind} (${sourceLocator.apiVersion})`;
+
+      let gvkIndex = groupVersionKinds.findIndex((n) => n.name === gvk);
+      if (gvkIndex === -1) {
+        const t = groupVersionKinds.push({
+          name: gvk,
           children: [],
+          icon: 'folder',
+          classNames: [],
         });
-        avIndex = t - 1;
+        gvkIndex = t - 1;
       }
 
-      let kindIndex = apiVersions[avIndex].children.findIndex(
-        (n) => n.name === sourceLocator.kind
-      );
-      if (kindIndex === -1) {
-        const t = apiVersions[avIndex].children.push({
-          name: sourceLocator.kind,
-          children: [],
-        });
-        kindIndex = t - 1;
-      }
-
-      apiVersions[avIndex].children[kindIndex].children.push({
+      groupVersionKinds[gvkIndex].children.push({
         name: sourceLocator.name,
         children: [],
         descriptor: desc,
+        icon: 'block',
+        classNames: [],
       });
 
-      apiVersions[avIndex].children[kindIndex].children.sort(treeNodeSort);
-      apiVersions[avIndex].children.sort(treeNodeSort);
-      apiVersions.sort(treeNodeSort);
+      groupVersionKinds[gvkIndex].children.sort(treeNodeSort);
+      groupVersionKinds.sort(treeNodeSort);
+
+      if (i === 0) {
+        this.selectDescriptor(desc);
+      }
     });
 
-    this.selectedId = apiVersions[0].children[0].children[0].descriptor.id;
+    const documents: TreeNode = {
+      name: 'Documents',
+      children: groupVersionKinds,
+      classNames: ['section'],
+    };
 
-    return apiVersions;
+    return [documents];
   }
 
   isSelected(descriptor: DocumentDescriptor) {

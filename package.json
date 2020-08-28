@@ -9,6 +9,9 @@
     "lint": "ng lint",
     "e2e": "ng e2e"
   },
+  "prettier": {
+    "htmlWhitespaceSensitivity": "css"
+  },
   "private": true,
   "dependencies": {
     "@angular/animations": "~9.1.11",

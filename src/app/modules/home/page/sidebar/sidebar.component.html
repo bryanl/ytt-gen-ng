@@ -1,16 +1,15 @@
 <clr-tree>
-  Documents
-  <clr-tree-node *ngFor="let apiVersionNode of nodes" clrExpanded="true">
-    <clr-icon shape="folder"></clr-icon>
-    {{ apiVersionNode.name }}
-    <clr-tree-node
-      *ngFor="let kindNode of apiVersionNode.children"
-      clrExpanded="true"
-    >
-      <clr-icon shape="folder"></clr-icon>
-      {{ kindNode.name }}
+  <clr-tree-node
+    *ngFor="let rootNode of treeNodes"
+    clrExpanded="true"
+    [ngClass]="rootNode.classNames"
+  >
+    {{ rootNode.name }}
+    <clr-tree-node *ngFor="let gvkNode of rootNode.children" clrExpanded="true">
+      <clr-icon [attr.shape]="gvkNode.icon"></clr-icon>
+      {{ gvkNode.name }}
       <clr-tree-node
-        *ngFor="let nameNode of kindNode.children"
+        *ngFor="let nameNode of gvkNode.children"
         clrExpanded="true"
       >
         <span
@@ -18,7 +17,7 @@
           [class.selected]="isSelected(nameNode.descriptor)"
           (click)="selectDescriptor(nameNode.descriptor)"
         >
-          <clr-icon shape="block"></clr-icon>
+          <clr-icon [attr.shape]="nameNode.icon"></clr-icon>
           {{ nameNode.name }}
         </span>
       </clr-tree-node>
