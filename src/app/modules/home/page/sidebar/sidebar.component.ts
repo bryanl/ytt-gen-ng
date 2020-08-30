@@ -9,7 +9,6 @@ import {
 } from '@angular/core';
 import { Subject } from 'rxjs';
 import { DocumentDescriptor } from '../../../../data/schema/document-descriptor';
-import { group } from '@angular/animations';
 
 interface TreeNode {
   name: string;
@@ -48,7 +47,6 @@ export class SidebarComponent implements OnInit {
 
   genDocuments(descriptors: DocumentDescriptor[]): TreeNode[] {
     const groupVersionKinds: TreeNode[] = [];
-    const self = this;
 
     descriptors.forEach((desc, i) => {
       const sourceLocator = desc.sourceLocator;
@@ -71,8 +69,6 @@ export class SidebarComponent implements OnInit {
         descriptor: desc,
         icon: 'block',
         classNames: [],
-        // isSelected: self.isSelected,
-        // click: self.selectDescriptor,
         isSelected: (descriptor: DocumentDescriptor): boolean =>
           this.isSelected(descriptor),
         click: (descriptor: DocumentDescriptor) =>
@@ -99,7 +95,9 @@ export class SidebarComponent implements OnInit {
 
     const generated: TreeNode = {
       name: 'Generated',
-      children: [{ name: 'test', children: [], classNames: [] }],
+      children: [
+        { name: 'values.yaml', children: [], classNames: [], icon: 'list' },
+      ],
       classNames: ['section'],
     };
 

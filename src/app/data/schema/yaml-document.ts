@@ -1,50 +1,9 @@
 import * as YAMLParser from 'yaml-ast-parser';
-import { v4 as uuidv4 } from 'uuid';
-import * as YAML from 'yaml';
-import { CST } from 'yaml/index';
 import { ValueDescriptor } from './value-descriptor';
-import { DocumentDescriptor } from './document-descriptor';
 import { Positionable } from './positionable';
 import { DocumentPosition } from './document-position';
 
 const BreakException = {};
-
-export class YamlDocument2 {
-  private readonly documents: CST.Document[];
-
-  private selected: number;
-
-  constructor(private readonly source: string) {
-    this.documents = YAML.parseCST(source);
-  }
-
-  docDescriptors(): DocumentDescriptor[] {
-    return this.documents.map<DocumentDescriptor>((doc) => {
-      const value = this.source
-        .substring(doc.valueRange.start, doc.valueRange.end)
-        .trim();
-      const obj = YAML.parse(value);
-      return {
-        id: uuidv4(),
-        sourceLocator: {
-          apiVersion: obj.apiVersion,
-          kind: obj.kind,
-          name: obj.metadata.name,
-        },
-        value,
-      };
-    });
-  }
-
-  select(index: number) {
-    this.selected = index;
-  }
-
-  current(): DocumentDescriptor {
-    const index = !this.selected ? 0 : this.selected;
-    return this.docDescriptors()[index];
-  }
-}
 
 export class YamlDocument {
   readonly yamlNode: YAMLParser.YAMLNode;

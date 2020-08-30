@@ -94,6 +94,7 @@ export class YttEditorComponent implements OnInit {
 
     editor.deltaDecorations([], decorations);
 
+    // TODO: only do this for objects
     this.monacoService
       .extract()
       .onKeySelected(editor)

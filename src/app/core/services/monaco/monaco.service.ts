@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import { NgxMonacoEditorConfig } from 'ngx-monaco-editor';
-import { YamlDocument } from '../../../data/schema/yaml-document';
-import { SchemaService } from '../schema/schema.service';
-import { Schema } from '../schema/schema';
-import { KubernetesObject } from '../../../data/schema/kubernetes-object';
-import { ExtractService } from '../extract/extract.service';
-import { SourceLinkService } from '../../../data/service/source-link/source-link.service';
 import { v4 as uuidv4 } from 'uuid';
-import IStandaloneEditorConstructionOptions = monaco.editor.IStandaloneEditorConstructionOptions;
+import { KubernetesObject } from '../../../data/schema/kubernetes-object';
+import { YamlDocument } from '../../../data/schema/yaml-document';
+import { SourceLinkService } from '../../../data/service/source-link/source-link.service';
+import { ExtractService } from '../extract/extract.service';
+import { Schema } from '../schema/schema';
+import { SchemaService } from '../schema/schema.service';
 import IStandaloneCodeEditor = monaco.editor.IStandaloneCodeEditor;
+import IStandaloneEditorConstructionOptions = monaco.editor.IStandaloneEditorConstructionOptions;
 import IDisposable = monaco.IDisposable;
 
 @Injectable({
@@ -41,7 +41,7 @@ export class MonacoService {
 
     const disposable: IDisposable = {
       dispose() {
-        disposables.forEach((d) => d.dispose());
+        disposables.filter((d) => d).forEach((d) => d.dispose());
       },
     };
 
@@ -63,8 +63,14 @@ export class MonacoService {
     editor: IStandaloneCodeEditor,
     schema: Schema
   ): IDisposable {
-    // set up code lens
-    const ko = new KubernetesObject(editor.getValue(), schema);
+    // Set up code lens
+
+    const value = editor.getValue();
+    if (!value) {
+      return undefined;
+    }
+
+    const ko = new KubernetesObject(value, schema);
     const sourceLinks = this.sourceLinkService.get(
       ko.groupVersionKind(),
       ko.name()

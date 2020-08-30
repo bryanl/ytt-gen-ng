@@ -8,8 +8,8 @@ import { UploadModalComponent } from './upload-modal/upload-modal.component';
 import { ValueModalComponent } from './value-modal/value-modal.component';
 import { YttEditorComponent } from './ytt-editor/ytt-editor.component';
 import { take } from 'rxjs/operators';
-import { YamlDocument2 } from '../../../data/schema/yaml-document';
 import { Field } from '../../../data/schema/field';
+import { Manifest } from '../../../data/schema/manifest';
 
 @Component({
   selector: 'app-home',
@@ -69,8 +69,14 @@ export class HomeComponent implements OnInit {
   }
   updateSource(source: string) {
     setTimeout(() => {
-      const doc = new YamlDocument2(source);
-      this.descriptor$.next(doc.current());
+      const doc = new Manifest(source);
+
+      const current = doc.current();
+      if (!current) {
+        return;
+      }
+
+      this.descriptor$.next(current);
       this.documentDescriptors$.next(doc.docDescriptors());
       this.showSidebar = true;
     });

@@ -7,9 +7,12 @@ import {
 } from './group-version-kind';
 
 export class KubernetesObject {
-  private parsed: any;
+  private readonly parsed: any;
 
   constructor(private source: string, private schema: ISchema) {
+    if (!source) {
+      throw new Error('source is null or undefined');
+    }
     this.parsed = YAML.parse(source);
   }
 
@@ -41,6 +44,9 @@ export class KubernetesObject {
   }
 
   private groupVersion(): GroupVersion {
+    if (!this.parsed) {
+      console.error('parsed is null', this.parsed);
+    }
     if (!this.parsed.apiVersion) {
       return undefined;
     }
