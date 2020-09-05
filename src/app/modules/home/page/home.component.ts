@@ -1,15 +1,18 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { Store } from '@ngrx/store';
 import { BehaviorSubject, Subject } from 'rxjs';
+import { take } from 'rxjs/operators';
 import { DocumentDescriptor } from '../../../data/schema/document-descriptor';
-import { UrlService } from '../url.service';
+import { Field } from '../../../data/schema/field';
+import { Manifest } from '../../../data/schema/manifest';
 import { SourceService } from '../../../data/service/source/source.service';
 import { DefaultValueService } from '../../../data/service/value/default-value.service';
+import { getCurrentDescriptor } from '../state/home.reducer';
+import { State } from '../state/home.state';
+import { UrlService } from '../url.service';
 import { UploadModalComponent } from './upload-modal/upload-modal.component';
 import { ValueModalComponent } from './value-modal/value-modal.component';
 import { YttEditorComponent } from './ytt-editor/ytt-editor.component';
-import { take } from 'rxjs/operators';
-import { Field } from '../../../data/schema/field';
-import { Manifest } from '../../../data/schema/manifest';
 
 @Component({
   selector: 'app-home',
@@ -33,18 +36,26 @@ export class HomeComponent implements OnInit {
   constructor(
     private urlService: UrlService,
     private sourceService: SourceService,
-    private defaultValueService: DefaultValueService
+    private defaultValueService: DefaultValueService,
+    private store: Store<State>
   ) {}
 
   ngOnInit(): void {
+    // TODO: unsubscribe
     this.sourceService
       .current()
       .subscribe((source) => this.handleSource(source));
 
+    // TODO: unsubscribe
     this.defaultValueService.current().subscribe(() => {
       if (this.yttEditor) {
         this.yttEditor.reload();
       }
+    });
+
+    // TODO: unsubscribe
+    this.store.select(getCurrentDescriptor).subscribe((currentDescriptor) => {
+      this.descriptor$.next(currentDescriptor);
     });
   }
 
@@ -84,9 +95,5 @@ export class HomeComponent implements OnInit {
 
   fieldClicked(field: Field) {
     this.valueModal.open(field);
-  }
-
-  descriptorSelected(descriptor: DocumentDescriptor) {
-    this.descriptor$.next(descriptor);
   }
 }

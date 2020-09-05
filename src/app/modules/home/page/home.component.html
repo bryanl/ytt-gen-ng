@@ -24,7 +24,6 @@
         <app-sidebar
           *ngIf="showSidebar"
           [docDescriptors$]="documentDescriptors$"
-          (currentDescriptor)="descriptorSelected($event)"
         ></app-sidebar>
       </div>
       <div class="ytt-content">

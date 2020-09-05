@@ -2,14 +2,17 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  EventEmitter,
   Input,
   OnInit,
-  Output,
 } from '@angular/core';
+import { Store } from '@ngrx/store';
 import { Observable, Subject } from 'rxjs';
+
 import { DocumentDescriptor } from '../../../../data/schema/document-descriptor';
 import { TreeNode } from '../../../../data/schema/tree-node';
+import * as HomeActions from '../../state/home.actions';
+import { getCurrentDescriptor } from '../../state/home.reducer';
+import { State } from '../../state/home.state';
 
 @Component({
   selector: 'app-sidebar',
@@ -20,20 +23,25 @@ import { TreeNode } from '../../../../data/schema/tree-node';
 export class SidebarComponent implements OnInit {
   @Input() docDescriptors$: Subject<DocumentDescriptor[]>;
 
-  @Output() currentDescriptor: EventEmitter<
-    DocumentDescriptor
-  > = new EventEmitter<DocumentDescriptor>();
-
   treeNodes$: Observable<TreeNode[]>;
   treeNodes: TreeNode[] = [];
   selectedId: string;
 
-  constructor(private cdr: ChangeDetectorRef) {}
+  constructor(private cdr: ChangeDetectorRef, private store: Store<State>) {}
 
   ngOnInit() {
+    // TODO: unsubscribe
     this.docDescriptors$.subscribe((descriptors) => {
       this.treeNodes = this.genTreeNodes(descriptors);
       this.cdr.markForCheck();
+    });
+
+    // TODO: unsubscribe
+    this.store.select(getCurrentDescriptor).subscribe((descriptor) => {
+      if (descriptor !== null) {
+        this.selectedId = descriptor.id;
+        this.cdr.markForCheck();
+      }
     });
   }
 
@@ -105,7 +113,7 @@ export class SidebarComponent implements OnInit {
       classNames: ['section'],
     };
 
-    return [documents, generated];
+    return [documents];
   }
 
   getChildren = (node: TreeNode) => node.children;
@@ -115,8 +123,9 @@ export class SidebarComponent implements OnInit {
   }
 
   selectDescriptor(descriptor: DocumentDescriptor) {
-    this.selectedId = descriptor.id;
-    this.currentDescriptor.emit(descriptor);
+    if (this.selectedId !== descriptor.id) {
+      this.store.dispatch(HomeActions.selectDocumentDescriptor({ descriptor }));
+    }
   }
 }
 
