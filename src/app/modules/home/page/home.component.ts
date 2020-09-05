@@ -1,12 +1,14 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { take } from 'rxjs/operators';
+
 import { DocumentDescriptor } from '../../../data/schema/document-descriptor';
 import { Field } from '../../../data/schema/field';
 import { Manifest } from '../../../data/schema/manifest';
 import { SourceService } from '../../../data/service/source/source.service';
 import { DefaultValueService } from '../../../data/service/value/default-value.service';
+import * as HomeActions from '../state/home.actions';
 import { getCurrentDescriptor } from '../state/home.reducer';
 import { State } from '../state/home.state';
 import { UrlService } from '../url.service';
@@ -28,10 +30,6 @@ export class HomeComponent implements OnInit {
   descriptor$: Subject<DocumentDescriptor> = new Subject<DocumentDescriptor>();
 
   documentDescriptors: DocumentDescriptor[];
-
-  documentDescriptors$: BehaviorSubject<
-    DocumentDescriptor[]
-  > = new BehaviorSubject<DocumentDescriptor[]>([]);
 
   constructor(
     private urlService: UrlService,
@@ -88,7 +86,11 @@ export class HomeComponent implements OnInit {
       }
 
       this.descriptor$.next(current);
-      this.documentDescriptors$.next(doc.docDescriptors());
+      this.store.dispatch(
+        HomeActions.setDocumentDescriptors({
+          descriptors: doc.docDescriptors(),
+        })
+      );
       this.showSidebar = true;
     });
   }

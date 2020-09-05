@@ -6,4 +6,5 @@ export interface State extends AppState.State {
 }
 export interface HomeState {
   currentDescriptor: DocumentDescriptor | null;
+  descriptors: DocumentDescriptor[];
 }

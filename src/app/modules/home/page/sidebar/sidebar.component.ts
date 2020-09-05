@@ -2,16 +2,15 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  Input,
   OnInit,
 } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Observable, Subject } from 'rxjs';
+import { Observable } from 'rxjs';
 
 import { DocumentDescriptor } from '../../../../data/schema/document-descriptor';
 import { TreeNode } from '../../../../data/schema/tree-node';
 import * as HomeActions from '../../state/home.actions';
-import { getCurrentDescriptor } from '../../state/home.reducer';
+import { getCurrentDescriptor, getDescriptors } from '../../state/home.reducer';
 import { State } from '../../state/home.state';
 
 @Component({
@@ -21,8 +20,6 @@ import { State } from '../../state/home.state';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SidebarComponent implements OnInit {
-  @Input() docDescriptors$: Subject<DocumentDescriptor[]>;
-
   treeNodes$: Observable<TreeNode[]>;
   treeNodes: TreeNode[] = [];
   selectedId: string;
@@ -30,8 +27,7 @@ export class SidebarComponent implements OnInit {
   constructor(private cdr: ChangeDetectorRef, private store: Store<State>) {}
 
   ngOnInit() {
-    // TODO: unsubscribe
-    this.docDescriptors$.subscribe((descriptors) => {
+    this.store.select(getDescriptors).subscribe((descriptors) => {
       this.treeNodes = this.genTreeNodes(descriptors);
       this.cdr.markForCheck();
     });

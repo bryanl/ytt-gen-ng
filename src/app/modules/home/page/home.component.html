@@ -21,10 +21,7 @@
   <div class="content-container">
     <div class="content-area">
       <div class="ytt-nav">
-        <app-sidebar
-          *ngIf="showSidebar"
-          [docDescriptors$]="documentDescriptors$"
-        ></app-sidebar>
+        <app-sidebar *ngIf="showSidebar"></app-sidebar>
       </div>
       <div class="ytt-content">
         <div class="ytt-editor">
