@@ -9,11 +9,11 @@ import {
 } from '@angular/core';
 import {
   EditorComponent,
-  NGX_MONACO_EDITOR_CONFIG,
   NgxEditorModel,
+  NGX_MONACO_EDITOR_CONFIG,
 } from 'ngx-monaco-editor';
-import { MonacoService } from '../../../../core/services/monaco/monaco.service';
 import { Subject } from 'rxjs';
+import { MonacoService } from '../../../../core/services/monaco/monaco.service';
 import { DocumentDescriptor } from '../../../../data/schema/document-descriptor';
 import { Field } from '../../../../data/schema/field';
 import IStandaloneCodeEditor = monaco.editor.IStandaloneCodeEditor;

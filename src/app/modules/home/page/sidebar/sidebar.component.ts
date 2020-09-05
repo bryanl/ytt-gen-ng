@@ -109,7 +109,7 @@ export class SidebarComponent implements OnInit {
       classNames: ['section'],
     };
 
-    return [documents];
+    return [documents, generated];
   }
 
   getChildren = (node: TreeNode) => node.children;
