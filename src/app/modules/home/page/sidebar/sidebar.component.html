@@ -5,7 +5,7 @@
     clrExpanded="true"
   >
     <ng-container
-      *ngIf="node.isSelected; then clickable; else expandable"
+      *ngIf="node.click; then clickable; else expandable"
     ></ng-container>
     <ng-template #clickable>
       <span

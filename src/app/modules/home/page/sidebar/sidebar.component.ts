@@ -7,18 +7,9 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { DocumentDescriptor } from '../../../../data/schema/document-descriptor';
-
-interface TreeNode {
-  name: string;
-  children: TreeNode[];
-  descriptor?: DocumentDescriptor;
-  icon?: string;
-  classNames: string[];
-  isSelected?(descriptor: DocumentDescriptor): boolean;
-  click?(descriptor: DocumentDescriptor);
-}
+import { TreeNode } from '../../../../data/schema/tree-node';
 
 @Component({
   selector: 'app-sidebar',
@@ -33,6 +24,7 @@ export class SidebarComponent implements OnInit {
     DocumentDescriptor
   > = new EventEmitter<DocumentDescriptor>();
 
+  treeNodes$: Observable<TreeNode[]>;
   treeNodes: TreeNode[] = [];
   selectedId: string;
 
@@ -64,6 +56,7 @@ export class SidebarComponent implements OnInit {
       }
 
       groupVersionKinds[gvkIndex].children.push({
+        id: desc.id,
         name: sourceLocator.name,
         children: [],
         descriptor: desc,
@@ -96,7 +89,18 @@ export class SidebarComponent implements OnInit {
     const generated: TreeNode = {
       name: 'Generated',
       children: [
-        { name: 'values.yaml', children: [], classNames: [], icon: 'list' },
+        {
+          name: 'values.yaml',
+          children: [],
+          classNames: [],
+          icon: 'list',
+          click(descriptor: DocumentDescriptor) {
+            console.log('clicked');
+          },
+          isSelected(descriptor: DocumentDescriptor): boolean {
+            return false;
+          },
+        },
       ],
       classNames: ['section'],
     };
