@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
+import { Field } from '@data/schema/field';
+import { KubernetesObject } from '@data/schema/kubernetes-object';
+import { YamlDocument } from '@data/schema/yaml-document';
+import { Observable } from 'rxjs';
+import * as YAML from 'yaml';
 import { SchemaService } from '../schema/schema.service';
 import IStandaloneCodeEditor = monaco.editor.IStandaloneCodeEditor;
-import { Observable } from 'rxjs';
-import { YamlDocument } from '../../../data/schema/yaml-document';
-import { KubernetesObject } from '../../../data/schema/kubernetes-object';
-import * as YAML from 'yaml';
-import { Field } from '../../../data/schema/field';
 
 @Injectable({
   providedIn: 'root',

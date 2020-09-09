@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ClarityModule } from '@clr/angular';
 
 import { UploadModalComponent } from './upload-modal.component';
 
@@ -8,9 +9,9 @@ describe('UploadModalComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ UploadModalComponent ]
-    })
-    .compileComponents();
+      declarations: [UploadModalComponent],
+      imports: [ClarityModule],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

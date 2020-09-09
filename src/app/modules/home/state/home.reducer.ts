@@ -1,31 +1,13 @@
-import {
-  createFeatureSelector,
-  createReducer,
-  createSelector,
-  on,
-} from '@ngrx/store';
+import { createReducer, on } from '@ngrx/store';
 
 import * as HomeActions from './home.actions';
 import { HomeState } from './home.state';
 
-export const homeFeatureName = 'home';
-
-const initialState: HomeState = {
+export const initialState: HomeState = {
   currentDescriptor: null,
   descriptors: [],
+  source: null,
 };
-
-const getHomeFeatureState = createFeatureSelector<HomeState>(homeFeatureName);
-
-export const getCurrentDescriptor = createSelector(
-  getHomeFeatureState,
-  (state) => state.currentDescriptor
-);
-
-export const getDescriptors = createSelector(
-  getHomeFeatureState,
-  (state) => state.descriptors
-);
 
 export const homeReducer = createReducer<HomeState>(
   initialState,
@@ -44,6 +26,15 @@ export const homeReducer = createReducer<HomeState>(
       return {
         ...state,
         descriptors: action.descriptors,
+      };
+    }
+  ),
+  on(
+    HomeActions.loadSourceSuccess,
+    (state, action): HomeState => {
+      return {
+        ...state,
+        source: action.source,
       };
     }
   )

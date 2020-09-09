@@ -12,19 +12,19 @@ import { FormGroup } from '@angular/forms';
   styleUrls: ['./create-value-form.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CreateValueFormComponent implements OnInit {
+export class CreateValueFormComponent {
   @Input() formGroup: FormGroup;
 
   constructor() {}
 
-  ngOnInit(): void {}
-
   sourceErrors() {
-    const object = this.formGroup.get(['add', 'raw']);
-    if (object) {
-      const errors = object.errors || {};
-      const text = Object.values<string>(errors);
-      return text.join(' ');
+    if (this.formGroup) {
+      const object = this.formGroup.get(['add', 'raw']);
+      if (object) {
+        const errors = object.errors || {};
+        const text = Object.values<string>(errors);
+        return text.join(' ');
+      }
     }
 
     return 'unable to find value';

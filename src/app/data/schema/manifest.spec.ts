@@ -1,6 +1,6 @@
 import { Manifest } from './manifest';
 
-fdescribe('Manifest', () => {
+describe('Manifest', () => {
   let source: string;
   let manifest: Manifest;
 

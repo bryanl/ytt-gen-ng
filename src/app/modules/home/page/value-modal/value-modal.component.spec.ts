@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ClarityModule } from '@clr/angular';
 
 import { ValueModalComponent } from './value-modal.component';
 
@@ -8,9 +9,9 @@ describe('ValueModalComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ValueModalComponent ]
-    })
-    .compileComponents();
+      declarations: [ValueModalComponent],
+      imports: [ClarityModule],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

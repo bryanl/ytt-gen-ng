@@ -1,0 +1,32 @@
+<form clrForm [formGroup]="form">
+  <clr-modal [(clrModalOpen)]="open">
+    <h3 class="modal-title">Upload YAML</h3>
+    <div class="modal-body">
+      <clr-textarea-container>
+        <label for="sourceURL">Source URL</label>
+        <textarea
+          id="sourceURL"
+          clrTextarea
+          formControlName="sourceURL"
+          placeholder="Source URL"
+          rows="5"
+          cols="50"
+        ></textarea>
+        <clr-control-error>URL is invalid</clr-control-error>
+      </clr-textarea-container>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline" (click)="cancel()">
+        Cancel
+      </button>
+      <button
+        type="button"
+        class="btn btn-primary"
+        (click)="save()"
+        [disabled]="!form.valid"
+      >
+        Ok
+      </button>
+    </div>
+  </clr-modal>
+</form>

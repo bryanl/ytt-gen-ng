@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ClarityModule } from '@clr/angular';
 
 import { ValueViewerComponent } from './value-viewer.component';
 
@@ -8,9 +9,9 @@ describe('ValueViewerComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ValueViewerComponent ]
-    })
-    .compileComponents();
+      declarations: [ValueViewerComponent],
+      imports: [ClarityModule],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

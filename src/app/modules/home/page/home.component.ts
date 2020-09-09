@@ -1,20 +1,18 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+
+import { DocumentDescriptor } from '@data/schema/document-descriptor';
+import { Field } from '@data/schema/field';
+import { Manifest } from '@data/schema/manifest';
+import { DefaultValueService } from '@data/service/value/default-value.service';
+import { YttEditorComponent } from '@home/page/ytt-editor/ytt-editor.component';
+import { getCurrentDescriptor, getSource } from '@home/state/home.selectors';
 import { Store } from '@ngrx/store';
 import { Subject } from 'rxjs';
-import { take } from 'rxjs/operators';
-
-import { DocumentDescriptor } from '../../../data/schema/document-descriptor';
-import { Field } from '../../../data/schema/field';
-import { Manifest } from '../../../data/schema/manifest';
-import { SourceService } from '../../../data/service/source/source.service';
-import { DefaultValueService } from '../../../data/service/value/default-value.service';
 import * as HomeActions from '../state/home.actions';
-import { getCurrentDescriptor } from '../state/home.reducer';
 import { State } from '../state/home.state';
-import { UrlService } from '../url.service';
+import * as UrlActions from '../state/url.actions';
 import { UploadModalComponent } from './upload-modal/upload-modal.component';
 import { ValueModalComponent } from './value-modal/value-modal.component';
-import { YttEditorComponent } from './ytt-editor/ytt-editor.component';
 
 @Component({
   selector: 'app-home',
@@ -32,24 +30,28 @@ export class HomeComponent implements OnInit {
   documentDescriptors: DocumentDescriptor[];
 
   constructor(
-    private urlService: UrlService,
-    private sourceService: SourceService,
     private defaultValueService: DefaultValueService,
     private store: Store<State>
   ) {}
 
   ngOnInit(): void {
-    // TODO: unsubscribe
-    this.sourceService
-      .current()
-      .subscribe((source) => this.handleSource(source));
-
-    // TODO: unsubscribe
-    this.defaultValueService.current().subscribe(() => {
-      if (this.yttEditor) {
-        this.yttEditor.reload();
+    this.store.select(getSource).subscribe((source) => {
+      console.log('got source', { source });
+      if (source === null) {
+        setTimeout(() => this.uploadYAML());
+      } else {
+        this.updateSource(source);
       }
     });
+
+    this.store.dispatch(HomeActions.loadSource());
+
+    // TODO: figure out what this does again...
+    // this.defaultValueService.current().subscribe(() => {
+    //   if (this.yttEditor) {
+    //     this.yttEditor.reload();
+    //   }
+    // });
 
     // TODO: unsubscribe
     this.store.select(getCurrentDescriptor).subscribe((currentDescriptor) => {
@@ -57,25 +59,10 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  handleSource(source: string) {
-    if (!source) {
-      this.uploadModal.open();
-      return;
-    }
-
-    this.updateSource(source);
+  uploadYAML() {
+    this.store.dispatch(UrlActions.openDialog());
   }
 
-  updateCode(url: string) {
-    this.urlService
-      .download(url)
-      .pipe(take(1))
-      .subscribe((source) => {
-        this.sourceService.set(source);
-        this.updateSource(source);
-        this.uploadModal.close();
-      });
-  }
   updateSource(source: string) {
     setTimeout(() => {
       const doc = new Manifest(source);

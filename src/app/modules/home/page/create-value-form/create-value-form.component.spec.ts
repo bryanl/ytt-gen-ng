@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ClarityModule } from '@clr/angular';
 
 import { CreateValueFormComponent } from './create-value-form.component';
 
@@ -8,9 +9,9 @@ describe('CreateValueFormComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CreateValueFormComponent ]
-    })
-    .compileComponents();
+      declarations: [CreateValueFormComponent],
+      imports: [ClarityModule],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

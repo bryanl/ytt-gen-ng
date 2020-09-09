@@ -50,23 +50,25 @@ export class YttEditorComponent implements OnInit {
   constructor(private monacoService: MonacoService, private ngZone: NgZone) {}
 
   ngOnInit() {
-    this.descriptor$.subscribe((descriptor) => {
-      if (this.monacoServiceDisposable) {
-        this.monacoServiceDisposable.dispose();
-      }
+    if (this.descriptor$) {
+      this.descriptor$.subscribe((descriptor) => {
+        if (this.monacoServiceDisposable) {
+          this.monacoServiceDisposable.dispose();
+        }
 
-      if (
-        this.currentDescriptor &&
-        descriptor.id === this.currentDescriptor.id
-      ) {
-        return;
-      }
-      this.model = {
-        value: descriptor.value,
-        language: 'yaml',
-      };
-      this.currentDescriptor = descriptor;
-    });
+        if (
+          this.currentDescriptor &&
+          descriptor.id === this.currentDescriptor.id
+        ) {
+          return;
+        }
+        this.model = {
+          value: descriptor.value,
+          language: 'yaml',
+        };
+        this.currentDescriptor = descriptor;
+      });
+    }
   }
 
   reload() {

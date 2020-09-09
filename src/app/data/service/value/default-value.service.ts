@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { DefaultValue } from '../../schema/default-value';
-import { StorageService } from '../storage/storage.service';
-import { SourceLinkService } from '../source-link/source-link.service';
+
+import { DefaultValue } from '@data/schema/default-value';
+import { SourceLinkService } from '@data/service/source-link/source-link.service';
+import { StorageService } from '@data/service/storage/storage.service';
 
 @Injectable({
   providedIn: 'root',

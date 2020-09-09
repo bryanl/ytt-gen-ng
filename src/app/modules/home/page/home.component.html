@@ -13,7 +13,7 @@
           <clr-icon shape="caret down"></clr-icon>
         </button>
         <clr-dropdown-menu *clrIfOpen clrPosition="bottom-right">
-          <a (click)="uploadModal.open()" clrDropdownItem>Upload</a>
+          <a (click)="uploadYAML()" clrDropdownItem>Upload</a>
         </clr-dropdown-menu>
       </clr-dropdown>
     </div>
@@ -39,6 +39,7 @@
   </div>
 </div>
 
-<app-upload-modal #uploadModal (url)="updateCode($event)"></app-upload-modal>
+<!--&lt;!&ndash; TODO delete me &ndash;&gt;-->
+<!--<app-upload-modal #uploadModal (url)="updateCode($event)"></app-upload-modal>-->
 
 <app-value-modal #valueModal></app-value-modal>

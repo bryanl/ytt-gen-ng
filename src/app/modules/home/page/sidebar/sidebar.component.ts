@@ -4,13 +4,16 @@ import {
   Component,
   OnInit,
 } from '@angular/core';
+import {
+  getCurrentDescriptor,
+  getDescriptors,
+} from '@home/state/home.selectors';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 
-import { DocumentDescriptor } from '../../../../data/schema/document-descriptor';
-import { TreeNode } from '../../../../data/schema/tree-node';
+import { DocumentDescriptor } from '@data/schema/document-descriptor';
+import { TreeNode } from '@data/schema/tree-node';
 import * as HomeActions from '../../state/home.actions';
-import { getCurrentDescriptor, getDescriptors } from '../../state/home.reducer';
 import { State } from '../../state/home.state';
 
 @Component({

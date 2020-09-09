@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ClarityModule } from '@clr/angular';
 
 import { ChooseValueFormComponent } from './choose-value-form.component';
 
@@ -8,9 +9,9 @@ describe('ChooseValueFormComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ChooseValueFormComponent ]
-    })
-    .compileComponents();
+      declarations: [ChooseValueFormComponent],
+      imports: [ClarityModule],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
